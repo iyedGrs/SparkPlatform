@@ -1,0 +1,12 @@
+# =============================================
+# SparkPlatform — Database Configuration
+# =============================================
+# STEP 1: Copy this file and rename to db.properties
+# STEP 2: Fill in your local MySQL credentials
+# STEP 3: NEVER commit db.properties to Git
+# =============================================
+
+db.url=jdbc:mysql://localhost:3306/sparkplatform
+db.username=root
+db.password=YOUR_PASSWORD_HERE
+db.driver=com.mysql.cj.jdbc.Driver

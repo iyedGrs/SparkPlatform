@@ -3,6 +3,7 @@
 
 # Log file
 *.log
+logs/
 
 # BlueJ files
 *.ctxt
@@ -34,6 +35,7 @@ dist/
 .idea/
 *.iml
 .vscode/
+.vscode/settings.json
 .eclipse/
 .settings/
 .classpath
@@ -45,6 +47,7 @@ Thumbs.db
 *.swp
 *.swo
 *~
+desktop.ini
 
 # Maven
 pom.xml.tag
@@ -60,5 +63,24 @@ buildNumber.properties
 .gradle/
 gradle-app.setting
 !gradle-wrapper.jar
+
+# =============================================
+# SparkPlatform .gitignore
+# =============================================
+
+# Database credentials — NEVER COMMIT
+src/main/resources/db.properties
+
+# Python AI engine
+ai-engine/__pycache__/
+ai-engine/**/__pycache__/
+ai-engine/*.pyc
+ai-engine/.env
+ai-engine/venv/
+ai-engine/.venv/
+
+# Environment files
+.env
+*.env
 
 .kiro
