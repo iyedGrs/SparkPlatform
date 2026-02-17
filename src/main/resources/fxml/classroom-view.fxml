@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.classroom.controllers.ClassroomMaterialsController"
+            styleClass="content-card">
+
+    <top>
+        <VBox spacing="8">
+            <Label text="Materials CRUD" styleClass="card-title" />
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="New" onAction="#onNew" styleClass="material-btn-secondary" />
+                <Button text="Save" onAction="#onSave" styleClass="material-btn-primary" />
+                <Button fx:id="archiveButton" text="Archive" onAction="#onArchive" styleClass="material-btn-secondary" />
+                <Button text="Refresh" onAction="#onRefresh" styleClass="material-btn-secondary" />
+                <Label fx:id="storageModeLabel" styleClass="material-meta" />
+            </HBox>
+            <padding>
+                <Insets top="4" right="4" bottom="4" left="4" />
+            </padding>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="12">
+            <TableView fx:id="materialsTable" prefHeight="280">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="70" />
+                    <TableColumn fx:id="colTitle" text="Title" prefWidth="260" />
+                    <TableColumn fx:id="colType" text="Type" prefWidth="120" />
+                    <TableColumn fx:id="colVisibility" text="Visibility" prefWidth="120" />
+                    <TableColumn fx:id="colStatus" text="Status" prefWidth="120" />
+                </columns>
+            </TableView>
+
+            <VBox spacing="10" styleClass="material-form">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <VBox spacing="4" HBox.hgrow="ALWAYS">
+                        <Label text="Title" styleClass="material-label" />
+                        <TextField fx:id="titleField" promptText="Material title" />
+                    </VBox>
+                    <VBox spacing="4">
+                        <Label text="Type" styleClass="material-label" />
+                        <ComboBox fx:id="typeCombo" prefWidth="170" />
+                    </VBox>
+                    <VBox spacing="4">
+                        <Label text="Visibility" styleClass="material-label" />
+                        <ComboBox fx:id="visibilityCombo" prefWidth="170" />
+                    </VBox>
+                </HBox>
+
+                <VBox spacing="4">
+                    <Label text="File Path" styleClass="material-label" />
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <TextField fx:id="filePathField" promptText="/materials/example.pdf" HBox.hgrow="ALWAYS" />
+                        <Button text="Browse PDF" onAction="#onBrowsePdf" styleClass="material-btn-secondary" />
+                        <Button text="Open File" onAction="#onOpenFile" styleClass="material-btn-secondary" />
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="4" VBox.vgrow="ALWAYS">
+                    <Label text="Notes / Description (optional)" styleClass="material-label" />
+                    <TextArea fx:id="contentArea" promptText="Optional notes about this material" prefRowCount="6" wrapText="true" VBox.vgrow="ALWAYS" />
+                </VBox>
+            </VBox>
+        </VBox>
+    </center>
+
+</BorderPane>

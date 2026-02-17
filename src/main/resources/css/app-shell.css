@@ -209,3 +209,41 @@
     -fx-font-size: 11px;
     -fx-font-weight: 600;
 }
+
+.material-btn-primary {
+    -fx-background-color: linear-gradient(to right, #1B7F7A, #2C8B84);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 12;
+    -fx-padding: 8 14 8 14;
+}
+
+.material-btn-secondary {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: -spark-ink;
+    -fx-border-color: -spark-border;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 8 14 8 14;
+    -fx-font-weight: 600;
+}
+
+.material-meta {
+    -fx-text-fill: -spark-muted;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.material-form {
+    -fx-background-color: #FFFFFFCC;
+    -fx-padding: 12;
+    -fx-background-radius: 14;
+    -fx-border-color: -spark-border;
+    -fx-border-radius: 14;
+}
+
+.material-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-ink;
+}

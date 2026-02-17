@@ -40,7 +40,7 @@ public class AppShellController {
     static {
         //  fx:id               FXML resource path                   Title              Subtitle
         PAGE_META.put("navDashboard",     new String[]{null,                            "Dashboard",       "Your academic cockpit"});
-        PAGE_META.put("navClassroom",     new String[]{"/fxml/classroom-view.fxml",     "Classroom",       "Courses & materials"});
+        PAGE_META.put("navClassroom",     new String[]{"/fxml/classroom-view.fxml",     "Classroom Materials", "CRUD with DB fallback"});
         PAGE_META.put("navGrades",        new String[]{"/fxml/grades-view.fxml",        "Grades",          "Track your performance"});
         PAGE_META.put("navScheduler",     new String[]{"/fxml/scheduler-view.fxml",     "Scheduler",       "Plan your week"});
         PAGE_META.put("navSparkyAI",      new String[]{"/fxml/sparky-ai-view.fxml",     "Sparky AI",       "Your study assistant"});

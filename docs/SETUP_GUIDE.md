@@ -228,6 +228,14 @@ feature/auth              → whoever is doing login
 
 ## ❓ Troubleshooting
 
+### No MySQL installed (local demo mode)
+If you don't install MySQL locally, the **Classroom Materials** module now works with an automatic in-memory fallback:
+
+- Start app normally with `mvn javafx:run`
+- If DB config/connection is unavailable, Materials CRUD uses memory storage
+- You can still create, edit, and archive materials in the same UI
+- Data is not persisted after app restart in this mode
+
 ### "Access denied for user 'root'"
 → Wrong password in `db.properties`. Reset MySQL root password:
 ```bash

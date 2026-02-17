@@ -436,3 +436,9 @@ db.driver=com.mysql.cj.jdbc.Driver
 ## 📄 License
 
 This project is developed for academic purposes.
+
+---
+
+## 📝 Implementation Notes
+
+- Materials CRUD implementation summary: [docs/MATERIALS_CRUD.md](docs/MATERIALS_CRUD.md)
