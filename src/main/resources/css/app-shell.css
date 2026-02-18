@@ -75,7 +75,7 @@
     -fx-cursor: hand;
     -fx-content-display: LEFT;
     -fx-graphic-text-gap: 12;
-    -fx-max-width: 1.7976931348623157E308;
+    -fx-max-width: 99999;
 }
 
 .nav-item:hover {

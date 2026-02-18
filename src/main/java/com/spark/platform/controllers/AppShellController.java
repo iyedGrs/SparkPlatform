@@ -51,9 +51,14 @@ public class AppShellController {
                 }
             }
         }
-        // Load the default page
-        loadIntoOutlet(null);
-        showPlaceholder("Project Board");
+        // Load the default page (Project Board)
+        String[] defaultMeta = PAGE_META.get("navProjectBoard");
+        if (defaultMeta != null) {
+            pageTitle.setText(defaultMeta[1]);
+            loadIntoOutlet(defaultMeta[0]);
+        } else {
+            showPlaceholder("Project Board");
+        }
     }
 
     // ──── Navigation handler ────
