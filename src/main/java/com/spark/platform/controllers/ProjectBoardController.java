@@ -1,10 +1,12 @@
 package com.spark.platform.controllers;
 
 import com.spark.platform.config.DatabaseConfig;
+import com.spark.platform.models.Project;
 import com.spark.platform.models.Sprint;
 import com.spark.platform.models.Task;
 import com.spark.platform.models.User;
 import com.spark.platform.services.SprintService;
+import com.spark.platform.services.StudentProjectService;
 import com.spark.platform.services.TaskService;
 
 import javafx.collections.FXCollections;
@@ -35,6 +37,8 @@ import java.util.stream.Collectors;
 public class ProjectBoardController {
 
     // ──── FXML bindings ────
+    @FXML private Label projectTitleLabel;
+    @FXML private Label projectSubtitleLabel;
     @FXML private ComboBox<Sprint> sprintSelector;
     @FXML private Label sprintDates;
     @FXML private Label sprintStatus;
@@ -61,10 +65,14 @@ public class ProjectBoardController {
     // ──── Services ────
     private final TaskService taskService = new TaskService();
     private final SprintService sprintService = new SprintService();
+    private final StudentProjectService projectService = new StudentProjectService();
 
     // ──── State ────
-    // TODO: HARDCODED — replace with dynamic project selection from logged-in user context (RBAC)
-    private static final int PROJECT_ID = 1;
+    // Project ID can now be set dynamically from StudentProjectsController
+    // Falls back to 1 if accessed directly (e.g., from old nav routes)
+    private int projectId = 1;
+    private boolean isInitialized = false;
+    private Project currentProject = null;
     private final String[] COLUMNS = {"TODO", "IN_PROGRESS", "REVIEW", "DONE"};
     private final Map<String, String> COLUMN_LABELS = new LinkedHashMap<>();
     private List<Task> allTasks = new ArrayList<>();
@@ -111,7 +119,27 @@ public class ProjectBoardController {
         // Listen for search text changes
         searchField.textProperty().addListener((obs, oldVal, newVal) -> renderActiveTab());
 
-        // Load data
+        // Don't load data here - wait for setProject() to be called
+        // This prevents loading with default projectId=1
+    }
+
+    /**
+     * Set the project ID for this kanban board dynamically.
+     * Called by StudentProjectsController when a project is selected.
+     */
+    public void setProject(int projectId) {
+        this.projectId = projectId;
+        this.isInitialized = true;
+        
+        // Clear existing data
+        sprintSelector.getItems().clear();
+        sprintSelector.setValue(null);
+        allTasks.clear();
+        teamMembers.clear();
+        currentProject = null;
+        
+        // Load data for the new project
+        loadProjectInfo();
         loadTeamMembers();
         loadSprints();
     }
@@ -128,30 +156,55 @@ public class ProjectBoardController {
     }
 
     // ──── Data loading ────
+    private void loadProjectInfo() {
+        try {
+            currentProject = projectService.findProjectById(projectId);
+            if (currentProject != null) {
+                projectTitleLabel.setText(currentProject.getTitle());
+                projectSubtitleLabel.setText(currentProject.getDescription() != null ? currentProject.getDescription() : "");
+            } else {
+                projectTitleLabel.setText("Project Not Found");
+                projectSubtitleLabel.setText("");
+            }
+        } catch (SQLException e) {
+            projectTitleLabel.setText("Error Loading Project");
+            projectSubtitleLabel.setText(e.getMessage());
+        }
+    }
+
     private void loadSprints() {
         try {
-            List<Sprint> sprints = sprintService.findByProject(PROJECT_ID);
+            List<Sprint> sprints = sprintService.findByProject(projectId);
+            
+            if (sprints.isEmpty()) {
+                sprintSelector.setItems(FXCollections.observableArrayList());
+                sprintSelector.setValue(null);
+                sprintDates.setText("No sprints found");
+                sprintStatus.setText("");
+                renderBoard(); // Clear the board
+                return;
+            }
+            
             sprintSelector.setItems(FXCollections.observableArrayList(sprints));
 
             // Select the ACTIVE sprint by default, or the first one
             Sprint active = sprints.stream()
                 .filter(s -> "ACTIVE".equals(s.getStatus()))
                 .findFirst()
-                .orElse(sprints.isEmpty() ? null : sprints.get(0));
+                .orElse(sprints.get(0));
 
-            if (active != null) {
-                sprintSelector.getSelectionModel().select(active);
-                updateSprintInfo(active);
-                loadTasks(active.getSprintId());
-            }
+            sprintSelector.getSelectionModel().select(active);
+            updateSprintInfo(active);
+            loadTasks(active.getSprintId());
         } catch (SQLException e) {
-            showError("Failed to load sprints: " + e.getMessage());
+            showError("Failed to load sprints for project " + projectId + ": " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void loadTasks(Integer sprintId) {
         try {
-            allTasks = taskService.findByProjectAndSprint(PROJECT_ID, sprintId);
+            allTasks = taskService.findByProjectAndSprint(projectId, sprintId);
             renderBoard();
         } catch (SQLException e) {
             showError("Failed to load tasks: " + e.getMessage());
@@ -165,7 +218,7 @@ public class ProjectBoardController {
                      "WHERE pm.project_id = ?";
         try (Connection conn = DatabaseConfig.getInstance().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, PROJECT_ID);
+            ps.setInt(1, projectId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     User u = new User();
@@ -270,7 +323,7 @@ public class ProjectBoardController {
 
     private void loadBacklogTasks() {
         try {
-            backlogTasks = taskService.findBacklog(PROJECT_ID);
+            backlogTasks = taskService.findBacklog(projectId);
         } catch (SQLException e) {
             showError("Failed to load backlog: " + e.getMessage());
         }
@@ -661,7 +714,7 @@ public class ProjectBoardController {
                 if (!valid) return null;
 
                 Task newTask = new Task();
-                newTask.setProjectId(PROJECT_ID);
+                newTask.setProjectId(projectId);
                 newTask.setSprintId(null); // backlog — no sprint
                 newTask.setTitle(titleVal);
                 newTask.setDescription(descVal.isEmpty() ? null : descVal);
@@ -716,7 +769,7 @@ public class ProjectBoardController {
         // Sprint number (auto)
         int nextNumber;
         try {
-            nextNumber = sprintService.getNextSprintNumber(PROJECT_ID);
+            nextNumber = sprintService.getNextSprintNumber(projectId);
         } catch (SQLException e) {
             nextNumber = sprintSelector.getItems().size() + 1;
         }
@@ -837,7 +890,7 @@ public class ProjectBoardController {
                 if (!valid) return null;
 
                 Sprint sprint = new Sprint();
-                sprint.setProjectId(PROJECT_ID);
+                sprint.setProjectId(projectId);
                 sprint.setSprintNumber(sprintNumber);
                 sprint.setTitle(titleVal);
                 sprint.setStartDate(java.sql.Date.valueOf(startDate));
@@ -1016,6 +1069,10 @@ public class ProjectBoardController {
         addIcon.getStyleClass().add("add-icon");
         addBtn.setGraphic(addIcon);
         addBtn.setContentDisplay(ContentDisplay.LEFT);
+
+        // Disable if no sprint is selected
+        Sprint selectedSprint = sprintSelector.getSelectionModel().getSelectedItem();
+        addBtn.setDisable(selectedSprint == null);
 
         addBtn.setOnAction(e -> openCreateTaskDialog(columnKey));
 
@@ -1619,7 +1676,7 @@ public class ProjectBoardController {
 
                 // Build the Task
                 Task newTask = new Task();
-                newTask.setProjectId(PROJECT_ID);
+                newTask.setProjectId(projectId);
                 Sprint currentSprint = sprintSelector.getSelectionModel().getSelectedItem();
                 newTask.setSprintId(currentSprint != null ? currentSprint.getSprintId() : null);
                 newTask.setTitle(titleVal);

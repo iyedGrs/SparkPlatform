@@ -25,8 +25,8 @@
         </padding>
 
         <!-- Project title -->
-        <Label text="SparkPlatform" styleClass="project-title" />
-        <Label text="Smart academic management platform for engineering students" styleClass="project-subtitle" />
+        <Label fx:id="projectTitleLabel" text="Loading..." styleClass="project-title" />
+        <Label fx:id="projectSubtitleLabel" text="" styleClass="project-subtitle" />
 
         <!-- Sprint selector + stats row -->
         <HBox styleClass="sprint-row" spacing="20" alignment="CENTER_LEFT">

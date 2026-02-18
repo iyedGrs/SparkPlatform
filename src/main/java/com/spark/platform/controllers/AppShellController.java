@@ -31,7 +31,7 @@ public class AppShellController {
         //  fx:id               FXML resource path                   Title
         PAGE_META.put("navClassroom",     new String[]{"/fxml/classroom-view.fxml",     "Classroom"});
         PAGE_META.put("navSparkAI",       new String[]{"/fxml/spark-ai-view.fxml",      "Spark AI"});
-        PAGE_META.put("navProjectBoard",  new String[]{"/fxml/project-board-view.fxml", "Project Board"});
+        PAGE_META.put("navProjectBoard",  new String[]{"/fxml/student-projects-view.fxml", "Project Board"});
         PAGE_META.put("navOpportunities", new String[]{"/fxml/opportunities-view.fxml", "Opportunities"});
         PAGE_META.put("navTeacherProjects", new String[]{"/fxml/teacher-projects-view.fxml", "Teacher Projects"});
         PAGE_META.put("navSettings",      new String[]{"/fxml/settings-view.fxml",      "Settings"});

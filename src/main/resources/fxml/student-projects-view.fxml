@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.spark.platform.controllers.StudentProjectsController"
+      styleClass="sp-root"
+      stylesheets="@../css/student-projects.css"
+      spacing="16" VBox.vgrow="ALWAYS">
+
+    <!-- Header -->
+    <VBox styleClass="sp-header" spacing="4">
+        <Label fx:id="viewTitle" text="Project Board" styleClass="sp-title"/>
+        <Label fx:id="viewSubtitle" text="Select a project" styleClass="sp-subtitle"/>
+    </VBox>
+
+    <!-- Content area -->
+    <StackPane fx:id="contentArea" VBox.vgrow="ALWAYS"/>
+
+</VBox>
