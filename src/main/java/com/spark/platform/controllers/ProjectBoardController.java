@@ -605,6 +605,34 @@ public class ProjectBoardController {
             .collect(Collectors.toList());
     }
 
+    /**
+     * Validates task form fields for real-time button state updates.
+     * Returns true if all mandatory fields are valid.
+     */
+    private boolean isTaskFormValid(String title, String priority, String hoursText, String description) {
+        // Title: must be 3-200 characters
+        if (title == null || title.trim().isEmpty()) return false;
+        if (title.trim().length() < 3 || title.trim().length() > 200) return false;
+        
+        // Priority: must be selected (not null)
+        if (priority == null || priority.trim().isEmpty()) return false;
+        
+        // Hours: if provided, must be valid positive number
+        if (hoursText != null && !hoursText.trim().isEmpty()) {
+            try {
+                float hours = Float.parseFloat(hoursText.trim());
+                if (hours <= 0) return false;
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+        }
+        
+        // Description: if provided, max 500 characters
+        if (description != null && description.trim().length() > 500) return false;
+        
+        return true;
+    }
+
     /** Creates a task directly in the backlog (no sprint). */
     private void openCreateBacklogTaskDialog() {
         Dialog<Task> dialog = new Dialog<>();
@@ -613,6 +641,10 @@ public class ProjectBoardController {
 
         ButtonType createType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(createType, ButtonType.CANCEL);
+        
+        // Get the Create button to disable/enable it based on validation
+        Button createButton = (Button) dialog.getDialogPane().lookupButton(createType);
+        createButton.setDisable(true);
 
         GridPane grid = new GridPane();
         grid.setHgap(12);
@@ -682,6 +714,21 @@ public class ProjectBoardController {
         descError.getStyleClass().add("validation-error");
         descError.setVisible(false);
         descError.setManaged(false);
+
+        // Add real-time validation listeners
+        Runnable validateForm = () -> {
+            String title = titleField.getText();
+            String priority = priorityCombo.getSelectionModel().getSelectedItem();
+            String hours = hoursField.getText();
+            String desc = descArea.getText();
+            boolean isValid = isTaskFormValid(title, priority, hours, desc);
+            createButton.setDisable(!isValid);
+        };
+        
+        titleField.textProperty().addListener((obs, old, newVal) -> validateForm.run());
+        priorityCombo.valueProperty().addListener((obs, old, newVal) -> validateForm.run());
+        hoursField.textProperty().addListener((obs, old, newVal) -> validateForm.run());
+        descArea.textProperty().addListener((obs, old, newVal) -> validateForm.run());
 
         int fRow = 0;
         grid.add(titleLabel, 0, fRow);    grid.add(titleField, 1, fRow);     fRow++;
@@ -1549,6 +1596,10 @@ public class ProjectBoardController {
         // Buttons
         ButtonType createType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
         dialog.getDialogPane().getButtonTypes().addAll(createType, ButtonType.CANCEL);
+        
+        // Get the Create button to disable/enable it based on validation
+        Button createButton = (Button) dialog.getDialogPane().lookupButton(createType);
+        createButton.setDisable(true);
 
         // Form
         GridPane grid = new GridPane();
@@ -1624,6 +1675,21 @@ public class ProjectBoardController {
         descError.getStyleClass().add("validation-error");
         descError.setVisible(false);
         descError.setManaged(false);
+
+        // Add real-time validation listeners
+        Runnable validateForm = () -> {
+            String title = titleField.getText();
+            String priority = priorityCombo.getSelectionModel().getSelectedItem();
+            String hours = hoursField.getText();
+            String desc = descArea.getText();
+            boolean isValid = isTaskFormValid(title, priority, hours, desc);
+            createButton.setDisable(!isValid);
+        };
+        
+        titleField.textProperty().addListener((obs, old, newVal) -> validateForm.run());
+        priorityCombo.valueProperty().addListener((obs, old, newVal) -> validateForm.run());
+        hoursField.textProperty().addListener((obs, old, newVal) -> validateForm.run());
+        descArea.textProperty().addListener((obs, old, newVal) -> validateForm.run());
 
         int row = 0;
         grid.add(titleLabel, 0, row);     grid.add(titleField, 1, row);      row++;
