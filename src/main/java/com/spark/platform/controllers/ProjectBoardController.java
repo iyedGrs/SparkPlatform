@@ -10,14 +10,10 @@ import com.spark.platform.services.TaskService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.util.StringConverter;
 
 import java.sql.*;
@@ -48,6 +44,7 @@ public class ProjectBoardController {
     @FXML private HBox filterBar;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> priorityFilter;
+    @FXML private ComboBox<String> assigneeFilter;
 
     @FXML private ScrollPane boardScroll;
     @FXML private HBox kanbanColumns;
@@ -64,7 +61,6 @@ public class ProjectBoardController {
     private List<Task> allTasks = new ArrayList<>();
     private List<User> teamMembers = new ArrayList<>();
     private Button activeTab;
-    private Task selectedTask; // for the detail panel
 
     // Avatar colors palette
     private static final String[] AVATAR_COLORS = {
@@ -102,6 +98,17 @@ public class ProjectBoardController {
         // Load data
         loadTeamMembers();
         loadSprints();
+    }
+
+    /** Populate the assignee filter after team members are loaded. */
+    private void setupAssigneeFilter() {
+        List<String> items = new ArrayList<>();
+        items.add("All");
+        for (User u : teamMembers) {
+            items.add(u.getName());
+        }
+        assigneeFilter.setItems(FXCollections.observableArrayList(items));
+        assigneeFilter.getSelectionModel().selectFirst();
     }
 
     // ──── Data loading ────
@@ -156,6 +163,7 @@ public class ProjectBoardController {
             // Continue without team members
         }
         renderTeamAvatars();
+        setupAssigneeFilter();
     }
 
     private void renderTeamAvatars() {
@@ -204,7 +212,9 @@ public class ProjectBoardController {
         boardScroll.setVisible(isBoard);
         boardScroll.setManaged(isBoard);
 
-        if (!isBoard) {
+        if (isBoard) {
+            renderBoard();
+        } else {
             showTabPlaceholder(clicked.getText());
         }
     }
@@ -234,6 +244,17 @@ public class ProjectBoardController {
     private List<Task> getFilteredTasks() {
         String searchText = searchField.getText() != null ? searchField.getText().toLowerCase().trim() : "";
         String priorityVal = priorityFilter.getSelectionModel().getSelectedItem();
+        String assigneeVal = assigneeFilter.getSelectionModel().getSelectedItem();
+
+        // Resolve assignee name to user ID
+        Integer assigneeId = null;
+        if (assigneeVal != null && !"All".equals(assigneeVal)) {
+            assigneeId = teamMembers.stream()
+                .filter(u -> u.getName().equals(assigneeVal))
+                .map(User::getUserId)
+                .findFirst().orElse(null);
+        }
+        final Integer filteredAssigneeId = assigneeId;
 
         return allTasks.stream()
             .filter(t -> {
@@ -244,6 +265,9 @@ public class ProjectBoardController {
                 }
                 if (priorityVal != null && !"All".equals(priorityVal)) {
                     if (!priorityVal.equals(t.getPriority())) return false;
+                }
+                if (filteredAssigneeId != null) {
+                    if (t.getAssignedTo() == null || !filteredAssigneeId.equals(t.getAssignedTo())) return false;
                 }
                 return true;
             })
@@ -446,7 +470,6 @@ public class ProjectBoardController {
     // ══════════════════════════════════════════════════════
 
     private void openDetailPanel(Task task) {
-        this.selectedTask = task;
         detailOverlay.getChildren().clear();
         detailOverlay.setVisible(true);
         detailOverlay.setManaged(true);
@@ -468,7 +491,6 @@ public class ProjectBoardController {
         detailOverlay.setVisible(false);
         detailOverlay.setManaged(false);
         detailOverlay.getChildren().clear();
-        selectedTask = null;
     }
 
     private VBox buildDetailPanelContent(Task task) {
@@ -478,19 +500,23 @@ public class ProjectBoardController {
         panel.setMaxWidth(480);
 
         // ─── Header ───
-        HBox header = new HBox();
+        HBox header = new HBox(8);
         header.getStyleClass().add("detail-panel-header");
         header.setAlignment(Pos.CENTER_LEFT);
 
+        VBox headerText = new VBox(2);
         Label taskIdLabel = new Label("TASK-" + task.getTaskId());
         taskIdLabel.getStyleClass().add("detail-task-id");
-        HBox.setHgrow(taskIdLabel, Priority.ALWAYS);
+        Label taskTitleHeader = new Label(task.getTitle());
+        taskTitleHeader.getStyleClass().add("detail-task-title-header");
+        headerText.getChildren().addAll(taskIdLabel, taskTitleHeader);
+        HBox.setHgrow(headerText, Priority.ALWAYS);
 
         Button closeBtn = new Button("✕");
         closeBtn.getStyleClass().add("detail-close-btn");
         closeBtn.setOnAction(e -> closeDetailPanel());
 
-        header.getChildren().addAll(taskIdLabel, closeBtn);
+        header.getChildren().addAll(headerText, closeBtn);
 
         // ─── Scrollable body ───
         VBox body = new VBox(16);
@@ -754,32 +780,35 @@ public class ProjectBoardController {
 
         // Title
         Label titleLabel = new Label("Title *");
-        titleLabel.setStyle("-fx-font-weight: 600; -fx-font-size: 12px;");
+        titleLabel.getStyleClass().add("dialog-label");
         TextField titleField = new TextField();
+        titleField.getStyleClass().add("dialog-field");
         titleField.setPromptText("Enter task title (3-200 characters)");
         titleField.setPrefWidth(300);
         Label titleError = new Label();
-        titleError.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 11px;");
+        titleError.getStyleClass().add("validation-error");
         titleError.setVisible(false);
         titleError.setManaged(false);
 
         // Priority
         Label priorityLabel = new Label("Priority *");
-        priorityLabel.setStyle("-fx-font-weight: 600; -fx-font-size: 12px;");
+        priorityLabel.getStyleClass().add("dialog-label");
         ComboBox<String> priorityCombo = new ComboBox<>(
             FXCollections.observableArrayList("CRITICAL", "HIGH", "MEDIUM", "LOW")
         );
+        priorityCombo.getStyleClass().add("dialog-combo");
         priorityCombo.setPromptText("Select priority");
         priorityCombo.setPrefWidth(300);
         Label priorityError = new Label();
-        priorityError.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 11px;");
+        priorityError.getStyleClass().add("validation-error");
         priorityError.setVisible(false);
         priorityError.setManaged(false);
 
         // Assignee
         Label assigneeLabel = new Label("Assignee");
-        assigneeLabel.setStyle("-fx-font-weight: 600; -fx-font-size: 12px;");
+        assigneeLabel.getStyleClass().add("dialog-label");
         ComboBox<User> assigneeCombo = new ComboBox<>();
+        assigneeCombo.getStyleClass().add("dialog-combo");
         assigneeCombo.setConverter(new StringConverter<User>() {
             @Override public String toString(User u) { return u == null ? "Unassigned" : u.getName(); }
             @Override public User fromString(String s) { return null; }
@@ -793,25 +822,27 @@ public class ProjectBoardController {
 
         // Estimated hours
         Label hoursLabel = new Label("Estimated Hours");
-        hoursLabel.setStyle("-fx-font-weight: 600; -fx-font-size: 12px;");
+        hoursLabel.getStyleClass().add("dialog-label");
         TextField hoursField = new TextField();
+        hoursField.getStyleClass().add("dialog-field");
         hoursField.setPromptText("e.g. 4.5");
         hoursField.setPrefWidth(300);
         Label hoursError = new Label();
-        hoursError.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 11px;");
+        hoursError.getStyleClass().add("validation-error");
         hoursError.setVisible(false);
         hoursError.setManaged(false);
 
         // Description
         Label descLabel = new Label("Description");
-        descLabel.setStyle("-fx-font-weight: 600; -fx-font-size: 12px;");
+        descLabel.getStyleClass().add("dialog-label");
         TextArea descArea = new TextArea();
+        descArea.getStyleClass().add("dialog-textarea");
         descArea.setPromptText("Describe the task (max 500 characters)");
         descArea.setPrefRowCount(3);
         descArea.setWrapText(true);
         descArea.setPrefWidth(300);
         Label descError = new Label();
-        descError.setStyle("-fx-text-fill: #EF4444; -fx-font-size: 11px;");
+        descError.getStyleClass().add("validation-error");
         descError.setVisible(false);
         descError.setManaged(false);
 
@@ -828,8 +859,13 @@ public class ProjectBoardController {
 
         dialog.getDialogPane().setContent(grid);
 
-        // Disable Create button initially
-        Node createButton = dialog.getDialogPane().lookupButton(createType);
+        // Apply project-board CSS to the dialog
+        dialog.getDialogPane().getStylesheets().add(
+            getClass().getResource("/css/project-board.css").toExternalForm()
+        );
+        dialog.getDialogPane().getStylesheets().add(
+            getClass().getResource("/css/app-shell.css").toExternalForm()
+        );
 
         // Validation on Create click
         dialog.setResultConverter(dialogButton -> {

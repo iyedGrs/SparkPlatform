@@ -66,6 +66,7 @@
         <TextField fx:id="searchField" promptText="Search tasks..." styleClass="search-field" prefWidth="200" />
         <Region styleClass="filter-divider" prefWidth="1" prefHeight="20" />
         <ComboBox fx:id="priorityFilter" styleClass="filter-combo" promptText="Priority" prefWidth="110" onAction="#onFilterChanged" />
+        <ComboBox fx:id="assigneeFilter" styleClass="filter-combo" promptText="Assignee" prefWidth="140" onAction="#onFilterChanged" />
     </HBox>
 
     <!-- ═══════ KANBAN BOARD ═══════ -->

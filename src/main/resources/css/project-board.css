@@ -348,14 +348,22 @@
 
 .detail-panel-header {
     -fx-padding: 16 24 16 24;
+    -fx-background-color: -spark-bg;
     -fx-border-color: transparent transparent -spark-border transparent;
     -fx-border-width: 0 0 1 0;
 }
 
 .detail-task-id {
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
     -fx-font-family: "JetBrains Mono";
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+.detail-task-title-header {
+    -fx-font-size: 13px;
     -fx-text-fill: -spark-muted;
+    -fx-padding: 2 0 0 4;
 }
 
 .detail-close-btn {
@@ -385,18 +393,19 @@
 }
 
 .detail-title-field {
-    -fx-font-size: 18px;
-    -fx-font-weight: 600;
+    -fx-font-size: 13px;
     -fx-text-fill: -spark-ink;
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-padding: 0;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-prompt-text-fill: -spark-subtle;
 }
 
 .detail-title-field:focused {
-    -fx-border-color: transparent transparent -spark-accent transparent;
-    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -spark-accent;
 }
 
 .detail-select {
@@ -417,29 +426,28 @@
 .detail-textarea {
     -fx-font-size: 13px;
     -fx-text-fill: -spark-ink;
-    -fx-background-color: -spark-soft;
-    -fx-border-color: -spark-border;
-    -fx-border-width: 1;
-    -fx-border-radius: 4;
-    -fx-padding: 8 10 8 10;
-    -fx-pref-row-count: 4;
-}
-
-.detail-textarea:focused {
-    -fx-border-color: -spark-accent;
-    -fx-background-color: -spark-card;
-}
-
-.detail-hours-field {
-    -fx-font-size: 13px;
-    -fx-font-family: "JetBrains Mono";
     -fx-background-color: -spark-card;
     -fx-border-color: -spark-border;
     -fx-border-width: 1;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
-    -fx-padding: 6 8 6 8;
-    -fx-max-width: 99999;
+    -fx-padding: 5 10 5 10;
+    -fx-pref-row-count: 4;
+}
+
+.detail-textarea:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.detail-hours-field {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-prompt-text-fill: -spark-subtle;
 }
 
 .detail-hours-field:focused {
@@ -453,29 +461,34 @@
     -fx-font-size: 13px;
     -fx-font-weight: 500;
     -fx-padding: 8 20 8 20;
-    -fx-background-radius: 6;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: -spark-accent;
+    -fx-border-width: 1;
     -fx-cursor: hand;
 }
 
 .detail-save-btn:hover {
     -fx-background-color: #1D4ED8;
+    -fx-border-color: #1D4ED8;
 }
 
 .detail-delete-btn {
-    -fx-background-color: transparent;
+    -fx-background-color: -spark-card;
     -fx-text-fill: #EF4444;
     -fx-font-size: 13px;
     -fx-font-weight: 500;
     -fx-padding: 8 20 8 20;
-    -fx-background-radius: 6;
+    -fx-background-radius: 4;
     -fx-cursor: hand;
-    -fx-border-color: #EF4444;
+    -fx-border-color: -spark-border;
     -fx-border-width: 1;
-    -fx-border-radius: 6;
+    -fx-border-radius: 4;
 }
 
 .detail-delete-btn:hover {
     -fx-background-color: #FEF2F2;
+    -fx-border-color: #EF4444;
 }
 
 /* ─── VALIDATION ERROR ─── */
@@ -487,6 +500,57 @@
 
 .field-error {
     -fx-border-color: #EF4444;
+}
+
+/* ─── DIALOG STYLING ─── */
+.dialog-field {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-prompt-text-fill: -spark-subtle;
+}
+
+.dialog-field:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.dialog-combo {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 3 6 3 6;
+}
+
+.dialog-combo:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.dialog-textarea {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-ink;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+}
+
+.dialog-textarea:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.dialog-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-muted;
 }
 
 /* ─── PLACEHOLDER (for unimplemented tabs) ─── */

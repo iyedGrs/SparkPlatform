@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,10 +96,15 @@ public class AppShellController {
         if (fxmlPath == null) return;
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showPlaceholder(pageTitle.getText());
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Node view = loader.load();
             contentOutlet.getChildren().add(view);
-        } catch (IOException e) {
+        } catch (Exception e) {
             showPlaceholder(pageTitle.getText());
         }
     }
