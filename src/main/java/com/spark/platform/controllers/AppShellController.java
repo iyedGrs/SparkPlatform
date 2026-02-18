@@ -42,22 +42,22 @@ public class AppShellController {
     // ──── Initialization ────
     @FXML
     private void initialize() {
-        // Default: Project Board is active (matches the FXML where it has "active" class)
+        // Default: Classroom is active (matches the FXML where it has "active" class)
         if (navGroup != null) {
             for (Node child : navGroup.getChildren()) {
-                if (child instanceof Button btn && "navProjectBoard".equals(btn.getId())) {
+                if (child instanceof Button btn && "navClassroom".equals(btn.getId())) {
                     activeNavButton = btn;
                     break;
                 }
             }
         }
-        // Load the default page (Project Board)
-        String[] defaultMeta = PAGE_META.get("navProjectBoard");
+        // Load the default page (Classroom)
+        String[] defaultMeta = PAGE_META.get("navClassroom");
         if (defaultMeta != null) {
             pageTitle.setText(defaultMeta[1]);
             loadIntoOutlet(defaultMeta[0]);
         } else {
-            showPlaceholder("Project Board");
+            showPlaceholder("Classroom");
         }
     }
 
