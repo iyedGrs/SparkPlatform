@@ -1,6 +1,5 @@
 package com.spark.platform.models;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class Commit {

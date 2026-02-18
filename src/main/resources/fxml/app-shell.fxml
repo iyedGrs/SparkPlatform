@@ -35,17 +35,20 @@
                 <padding>
                     <Insets top="4" right="12" bottom="0" left="12" />
                 </padding>
-                <Button fx:id="navClassroom" text="Classroom" styleClass="nav-item" onAction="#onNavClick">
+                <Button fx:id="navClassroom" text="Classroom" styleClass="nav-item,active" onAction="#onNavClick">
                     <graphic><Region styleClass="nav-icon,icon-classroom" /></graphic>
                 </Button>
                 <Button fx:id="navSparkAI" text="Spark AI" styleClass="nav-item" onAction="#onNavClick">
                     <graphic><Region styleClass="nav-icon,icon-spark-ai" /></graphic>
                 </Button>
-                <Button fx:id="navProjectBoard" text="Project Board" styleClass="nav-item,active" onAction="#onNavClick">
+                <Button fx:id="navProjectBoard" text="Project Board" styleClass="nav-item" onAction="#onNavClick">
                     <graphic><Region styleClass="nav-icon,icon-project-board" /></graphic>
                 </Button>
                 <Button fx:id="navOpportunities" text="Opportunities" styleClass="nav-item" onAction="#onNavClick">
                     <graphic><Region styleClass="nav-icon,icon-opportunities" /></graphic>
+                </Button>
+                <Button fx:id="navTeacherProjects" text="Teacher Projects" styleClass="nav-item" onAction="#onNavClick">
+                    <graphic><Region styleClass="nav-icon,icon-teacher-projects" /></graphic>
                 </Button>
             </VBox>
 

@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,8 +31,9 @@ public class AppShellController {
         //  fx:id               FXML resource path                   Title
         PAGE_META.put("navClassroom",     new String[]{"/fxml/classroom-view.fxml",     "Classroom"});
         PAGE_META.put("navSparkAI",       new String[]{"/fxml/spark-ai-view.fxml",      "Spark AI"});
-        PAGE_META.put("navProjectBoard",  new String[]{"/fxml/project-board-view.fxml", "Project Board"});
+        PAGE_META.put("navProjectBoard",  new String[]{"/fxml/student-projects-view.fxml", "Project Board"});
         PAGE_META.put("navOpportunities", new String[]{"/fxml/opportunities-view.fxml", "Opportunities"});
+        PAGE_META.put("navTeacherProjects", new String[]{"/fxml/teacher-projects-view.fxml", "Teacher Projects"});
         PAGE_META.put("navSettings",      new String[]{"/fxml/settings-view.fxml",      "Settings"});
     }
 
@@ -42,22 +42,22 @@ public class AppShellController {
     // ──── Initialization ────
     @FXML
     private void initialize() {
-        // Default: Project Board is active (matches the FXML where it has "active" class)
+        // Default: Classroom is active (matches the FXML where it has "active" class)
         if (navGroup != null) {
             for (Node child : navGroup.getChildren()) {
-                if (child instanceof Button btn && "navProjectBoard".equals(btn.getId())) {
+                if (child instanceof Button btn && "navClassroom".equals(btn.getId())) {
                     activeNavButton = btn;
                     break;
                 }
             }
         }
-        // Load the default page (Project Board)
-        String[] defaultMeta = PAGE_META.get("navProjectBoard");
+        // Load the default page (Classroom)
+        String[] defaultMeta = PAGE_META.get("navClassroom");
         if (defaultMeta != null) {
             pageTitle.setText(defaultMeta[1]);
             loadIntoOutlet(defaultMeta[0]);
         } else {
-            showPlaceholder("Project Board");
+            showPlaceholder("Classroom");
         }
     }
 
@@ -102,10 +102,15 @@ public class AppShellController {
         if (fxmlPath == null) return;
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            java.net.URL resource = getClass().getResource(fxmlPath);
+            if (resource == null) {
+                showPlaceholder(pageTitle.getText());
+                return;
+            }
+            FXMLLoader loader = new FXMLLoader(resource);
             Node view = loader.load();
             contentOutlet.getChildren().add(view);
-        } catch (IOException e) {
+        } catch (Exception e) {
             showPlaceholder(pageTitle.getText());
         }
     }
