@@ -13,6 +13,7 @@ public class Project {
     private Date startDate;
     private Date endDate;
     private String status;
+    private Integer classroomId;
     private Timestamp createdAt;
 
     public Project() {}
@@ -43,6 +44,9 @@ public class Project {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public Integer getClassroomId() { return classroomId; }
+    public void setClassroomId(Integer classroomId) { this.classroomId = classroomId; }
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }

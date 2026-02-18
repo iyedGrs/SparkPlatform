@@ -47,6 +47,9 @@
                 <Button fx:id="navOpportunities" text="Opportunities" styleClass="nav-item" onAction="#onNavClick">
                     <graphic><Region styleClass="nav-icon,icon-opportunities" /></graphic>
                 </Button>
+                <Button fx:id="navTeacherProjects" text="Teacher Projects" styleClass="nav-item" onAction="#onNavClick">
+                    <graphic><Region styleClass="nav-icon,icon-teacher-projects" /></graphic>
+                </Button>
             </VBox>
 
             <!-- Spacer pushes settings to bottom -->
