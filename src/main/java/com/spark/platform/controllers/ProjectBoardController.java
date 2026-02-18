@@ -17,6 +17,7 @@ import javafx.scene.layout.*;
 import javafx.util.StringConverter;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,6 +51,9 @@ public class ProjectBoardController {
     @FXML private HBox kanbanColumns;
     @FXML private HBox detailOverlay;
 
+    @FXML private ScrollPane backlogScroll;
+    @FXML private VBox backlogContent;
+
     // ──── Services ────
     private final TaskService taskService = new TaskService();
     private final SprintService sprintService = new SprintService();
@@ -61,6 +65,10 @@ public class ProjectBoardController {
     private List<Task> allTasks = new ArrayList<>();
     private List<User> teamMembers = new ArrayList<>();
     private Button activeTab;
+
+    // Backlog state
+    private List<Task> backlogTasks = new ArrayList<>();
+    private final Set<Integer> expandedBacklogTasks = new HashSet<>();
 
     // Avatar colors palette
     private static final String[] AVATAR_COLORS = {
@@ -93,7 +101,7 @@ public class ProjectBoardController {
         priorityFilter.getSelectionModel().selectFirst();
 
         // Listen for search text changes
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> renderBoard());
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> renderActiveTab());
 
         // Load data
         loadTeamMembers();
@@ -205,21 +213,34 @@ public class ProjectBoardController {
         clicked.getStyleClass().add("active");
         activeTab = clicked;
 
-        // Only Board tab is implemented
         boolean isBoard = clicked == tabBoard;
+        boolean isBacklog = clicked == tabBacklog;
+
+        // Show/hide filter bar for board and backlog
         filterBar.setVisible(isBoard);
         filterBar.setManaged(isBoard);
+
+        // Show/hide board scroll
         boardScroll.setVisible(isBoard);
         boardScroll.setManaged(isBoard);
 
+        // Show/hide backlog scroll
+        backlogScroll.setVisible(isBacklog);
+        backlogScroll.setManaged(isBacklog);
+
         if (isBoard) {
             renderBoard();
+        } else if (isBacklog) {
+            renderBacklog();
         } else {
             showTabPlaceholder(clicked.getText());
         }
     }
 
     private void showTabPlaceholder(String tabName) {
+        // Hide board and backlog, show placeholder in a visible panel
+        boardScroll.setVisible(true);
+        boardScroll.setManaged(true);
         kanbanColumns.getChildren().clear();
         VBox placeholder = new VBox(8);
         placeholder.getStyleClass().add("board-placeholder");
@@ -235,10 +256,614 @@ public class ProjectBoardController {
         kanbanColumns.getChildren().add(placeholder);
     }
 
+    // ══════════════════════════════════════════════════════
+    //   BACKLOG VIEW
+    // ══════════════════════════════════════════════════════
+
+    private void loadBacklogTasks() {
+        try {
+            backlogTasks = taskService.findBacklog(PROJECT_ID);
+        } catch (SQLException e) {
+            showError("Failed to load backlog: " + e.getMessage());
+        }
+    }
+
+    private void renderBacklog() {
+        loadBacklogTasks();
+        backlogContent.getChildren().clear();
+
+        // ─── Toolbar ───
+        HBox toolbar = buildBacklogToolbar();
+        backlogContent.getChildren().add(toolbar);
+
+        // ─── List ───
+        refreshBacklogList();
+    }
+
+    private void refreshBacklogList() {
+        // Remove everything except the toolbar (first child)
+        if (backlogContent.getChildren().size() > 1) {
+            backlogContent.getChildren().remove(1, backlogContent.getChildren().size());
+        }
+
+        List<Task> filtered = getFilteredBacklogTasks();
+
+        // Update count badge
+        updateBacklogCount(filtered.size(), backlogTasks.size());
+
+        if (filtered.isEmpty()) {
+            VBox empty = new VBox(8);
+            empty.getStyleClass().add("backlog-empty");
+            Label emptyTitle = new Label("No backlog items");
+            emptyTitle.getStyleClass().add("backlog-empty-title");
+            Label emptyText = new Label(backlogTasks.isEmpty()
+                ? "Create tasks without a sprint to populate the backlog."
+                : "No items match your current filters.");
+            emptyText.getStyleClass().add("backlog-empty-text");
+            empty.getChildren().addAll(emptyTitle, emptyText);
+            backlogContent.getChildren().add(empty);
+            return;
+        }
+
+        // Bordered container for the list
+        VBox listBorder = new VBox();
+        listBorder.getStyleClass().add("backlog-list-border");
+        listBorder.setPadding(new Insets(0));
+
+        VBox listInner = new VBox();
+        listInner.getStyleClass().add("backlog-list");
+        listInner.setPadding(new Insets(0));
+        listInner.setSpacing(0);
+
+        for (int i = 0; i < filtered.size(); i++) {
+            Task task = filtered.get(i);
+            boolean isLast = (i == filtered.size() - 1);
+            boolean isExpanded = expandedBacklogTasks.contains(task.getTaskId());
+
+            VBox rowGroup = buildBacklogRow(task, isLast, isExpanded);
+            listInner.getChildren().add(rowGroup);
+        }
+
+        listBorder.getChildren().add(listInner);
+
+        VBox listWrapper = new VBox(listBorder);
+        listWrapper.setPadding(new Insets(0, 24, 16, 24));
+
+        backlogContent.getChildren().add(listWrapper);
+    }
+
+    private Label backlogCountBadge; // persists for updates
+
+    private HBox buildBacklogToolbar() {
+        HBox toolbar = new HBox(12);
+        toolbar.getStyleClass().add("backlog-toolbar");
+        toolbar.setAlignment(Pos.CENTER_LEFT);
+
+        // Count badge
+        backlogCountBadge = new Label("");
+        backlogCountBadge.getStyleClass().add("backlog-count-badge");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        // Create Task button
+        Button createBtn = new Button("Create Task");
+        createBtn.getStyleClass().add("backlog-create-btn");
+
+        Region addIcon = new Region();
+        addIcon.getStyleClass().add("add-icon");
+        addIcon.setStyle("-fx-background-color: white;");
+        createBtn.setGraphic(addIcon);
+        createBtn.setContentDisplay(ContentDisplay.LEFT);
+
+        createBtn.setOnAction(e -> openCreateBacklogTaskDialog());
+
+        toolbar.getChildren().addAll(backlogCountBadge, spacer, createBtn);
+        return toolbar;
+    }
+
+    private void updateBacklogCount(int filteredCount, int totalCount) {
+        if (backlogCountBadge != null) {
+            backlogCountBadge.setText(filteredCount + " of " + totalCount + " items");
+        }
+    }
+
+    private VBox buildBacklogRow(Task task, boolean isLast, boolean isExpanded) {
+        VBox rowGroup = new VBox();
+
+        // ─── Main row ───
+        HBox row = new HBox(10);
+        row.getStyleClass().add("backlog-row");
+        if (isLast && !isExpanded) {
+            row.getStyleClass().add("backlog-row-last");
+        }
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        // Chevron
+        Label chevron = new Label(isExpanded ? "▼" : "▶");
+        chevron.getStyleClass().add("backlog-chevron");
+
+        // Priority dot
+        Region priorityDot = new Region();
+        priorityDot.getStyleClass().addAll("priority-dot", getPriorityClass(task.getPriority()));
+
+        // Task ID
+        Label idLabel = new Label("TASK-" + task.getTaskId());
+        idLabel.getStyleClass().add("backlog-task-id");
+
+        // Title
+        Label titleLabel = new Label(task.getTitle());
+        titleLabel.getStyleClass().add("backlog-task-title");
+        HBox.setHgrow(titleLabel, Priority.ALWAYS);
+        titleLabel.setMaxWidth(Double.MAX_VALUE);
+
+        // Priority chip
+        Label chip = buildLabelChip(task);
+
+        // Story points
+        HBox rightSide = new HBox(8);
+        rightSide.setAlignment(Pos.CENTER_RIGHT);
+
+        if (task.getEstimatedHours() != null) {
+            Label pointsBadge = new Label(String.valueOf(task.getEstimatedHours().intValue()));
+            pointsBadge.getStyleClass().add("story-points-badge");
+            rightSide.getChildren().add(pointsBadge);
+        }
+
+        // Assignee avatar
+        if (task.getAssignedTo() != null) {
+            User assignee = teamMembers.stream()
+                .filter(u -> u.getUserId() == task.getAssignedTo())
+                .findFirst().orElse(null);
+            String name = assignee != null ? assignee.getName() : "?";
+            int idx = teamMembers.indexOf(assignee);
+            String color = AVATAR_COLORS[Math.max(0, idx) % AVATAR_COLORS.length];
+            StackPane avatar = buildAvatar(name, 24, color);
+            rightSide.getChildren().add(avatar);
+        }
+
+        row.getChildren().addAll(chevron, priorityDot, idLabel, titleLabel);
+        if (chip != null) row.getChildren().add(chip);
+        row.getChildren().add(rightSide);
+
+        // Click to toggle expand
+        row.setOnMouseClicked(e -> {
+            if (expandedBacklogTasks.contains(task.getTaskId())) {
+                expandedBacklogTasks.remove(task.getTaskId());
+            } else {
+                expandedBacklogTasks.add(task.getTaskId());
+            }
+            refreshBacklogList();
+        });
+
+        rowGroup.getChildren().add(row);
+
+        // ─── Expanded content ───
+        if (isExpanded) {
+            VBox expanded = new VBox(6);
+            expanded.getStyleClass().add("backlog-expanded");
+            if (isLast) {
+                expanded.setStyle("-fx-border-width: 0;");
+            }
+
+            String desc = task.getDescription() != null && !task.getDescription().isBlank()
+                ? task.getDescription()
+                : "No description provided.";
+            Label descLabel = new Label(desc);
+            descLabel.getStyleClass().add("backlog-desc");
+            descLabel.setWrapText(true);
+
+            // "Move to current sprint" button
+            Sprint currentSprint = sprintSelector.getSelectionModel().getSelectedItem();
+            if (currentSprint != null) {
+                Button moveBtn = new Button("Move to Sprint " + currentSprint.getSprintNumber() + " \u2192");
+                moveBtn.getStyleClass().add("backlog-move-btn");
+                moveBtn.setOnAction(ev -> {
+                    try {
+                        taskService.moveToSprint(task.getTaskId(), currentSprint.getSprintId());
+                        backlogTasks.remove(task);
+                        expandedBacklogTasks.remove(task.getTaskId());
+                        refreshBacklogList();
+                        // Also refresh board tasks if we switch back
+                        loadTasks(currentSprint.getSprintId());
+                    } catch (SQLException ex) {
+                        showError("Failed to move task: " + ex.getMessage());
+                    }
+                });
+                expanded.getChildren().addAll(descLabel, moveBtn);
+            } else {
+                expanded.getChildren().add(descLabel);
+            }
+
+            rowGroup.getChildren().add(expanded);
+        }
+
+        return rowGroup;
+    }
+
+    private List<Task> getFilteredBacklogTasks() {
+        String searchText = searchField.getText() != null ? searchField.getText().toLowerCase().trim() : "";
+        String priorityVal = priorityFilter.getSelectionModel().getSelectedItem();
+        String assigneeVal = assigneeFilter.getSelectionModel().getSelectedItem();
+
+        Integer assigneeId = null;
+        if (assigneeVal != null && !"All".equals(assigneeVal)) {
+            assigneeId = teamMembers.stream()
+                .filter(u -> u.getName().equals(assigneeVal))
+                .map(User::getUserId)
+                .findFirst().orElse(null);
+        }
+        final Integer filteredAssigneeId = assigneeId;
+
+        return backlogTasks.stream()
+            .filter(t -> {
+                if (!searchText.isEmpty()) {
+                    boolean matchTitle = t.getTitle() != null && t.getTitle().toLowerCase().contains(searchText);
+                    boolean matchId = ("TASK-" + t.getTaskId()).toLowerCase().contains(searchText);
+                    if (!matchTitle && !matchId) return false;
+                }
+                if (priorityVal != null && !"All".equals(priorityVal)) {
+                    if (!priorityVal.equals(t.getPriority())) return false;
+                }
+                if (filteredAssigneeId != null) {
+                    if (t.getAssignedTo() == null || !filteredAssigneeId.equals(t.getAssignedTo())) return false;
+                }
+                return true;
+            })
+            .collect(Collectors.toList());
+    }
+
+    /** Creates a task directly in the backlog (no sprint). */
+    private void openCreateBacklogTaskDialog() {
+        Dialog<Task> dialog = new Dialog<>();
+        dialog.setTitle("New Backlog Task");
+        dialog.setHeaderText("Create a new task in the backlog");
+
+        ButtonType createType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(createType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(12);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 20, 10, 20));
+        grid.setPrefWidth(440);
+
+        Label titleLabel = new Label("Title *");
+        titleLabel.getStyleClass().add("dialog-label");
+        TextField titleField = new TextField();
+        titleField.getStyleClass().add("dialog-field");
+        titleField.setPromptText("Enter task title (3-200 characters)");
+        titleField.setPrefWidth(300);
+        Label titleError = new Label();
+        titleError.getStyleClass().add("validation-error");
+        titleError.setVisible(false);
+        titleError.setManaged(false);
+
+        Label priorityLabel = new Label("Priority *");
+        priorityLabel.getStyleClass().add("dialog-label");
+        ComboBox<String> priorityCombo = new ComboBox<>(
+            FXCollections.observableArrayList("CRITICAL", "HIGH", "MEDIUM", "LOW")
+        );
+        priorityCombo.getStyleClass().add("dialog-combo");
+        priorityCombo.setPromptText("Select priority");
+        priorityCombo.setPrefWidth(300);
+        Label priorityError = new Label();
+        priorityError.getStyleClass().add("validation-error");
+        priorityError.setVisible(false);
+        priorityError.setManaged(false);
+
+        Label assigneeLabel = new Label("Assignee");
+        assigneeLabel.getStyleClass().add("dialog-label");
+        ComboBox<User> assigneeCombo = new ComboBox<>();
+        assigneeCombo.getStyleClass().add("dialog-combo");
+        assigneeCombo.setConverter(new StringConverter<User>() {
+            @Override public String toString(User u) { return u == null ? "Unassigned" : u.getName(); }
+            @Override public User fromString(String s) { return null; }
+        });
+        List<User> assigneeOpts = new ArrayList<>();
+        assigneeOpts.add(null);
+        assigneeOpts.addAll(teamMembers);
+        assigneeCombo.setItems(FXCollections.observableArrayList(assigneeOpts));
+        assigneeCombo.getSelectionModel().selectFirst();
+        assigneeCombo.setPrefWidth(300);
+
+        Label hoursLabel = new Label("Estimated Hours");
+        hoursLabel.getStyleClass().add("dialog-label");
+        TextField hoursField = new TextField();
+        hoursField.getStyleClass().add("dialog-field");
+        hoursField.setPromptText("e.g. 4.5");
+        hoursField.setPrefWidth(300);
+        Label hoursError = new Label();
+        hoursError.getStyleClass().add("validation-error");
+        hoursError.setVisible(false);
+        hoursError.setManaged(false);
+
+        Label descLabel = new Label("Description");
+        descLabel.getStyleClass().add("dialog-label");
+        TextArea descArea = new TextArea();
+        descArea.getStyleClass().add("dialog-textarea");
+        descArea.setPromptText("Describe the task (max 500 characters)");
+        descArea.setPrefRowCount(3);
+        descArea.setWrapText(true);
+        descArea.setPrefWidth(300);
+        Label descError = new Label();
+        descError.getStyleClass().add("validation-error");
+        descError.setVisible(false);
+        descError.setManaged(false);
+
+        int fRow = 0;
+        grid.add(titleLabel, 0, fRow);    grid.add(titleField, 1, fRow);     fRow++;
+        grid.add(new Label(), 0, fRow);   grid.add(titleError, 1, fRow);      fRow++;
+        grid.add(priorityLabel, 0, fRow); grid.add(priorityCombo, 1, fRow);  fRow++;
+        grid.add(new Label(), 0, fRow);   grid.add(priorityError, 1, fRow);   fRow++;
+        grid.add(assigneeLabel, 0, fRow); grid.add(assigneeCombo, 1, fRow);  fRow++;
+        grid.add(hoursLabel, 0, fRow + 1);  grid.add(hoursField, 1, fRow + 1);    fRow += 2;
+        grid.add(new Label(), 0, fRow);   grid.add(hoursError, 1, fRow);      fRow++;
+        grid.add(descLabel, 0, fRow);     grid.add(descArea, 1, fRow);       fRow++;
+        grid.add(new Label(), 0, fRow);   grid.add(descError, 1, fRow);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getStylesheets().add(
+            getClass().getResource("/css/project-board.css").toExternalForm()
+        );
+        dialog.getDialogPane().getStylesheets().add(
+            getClass().getResource("/css/app-shell.css").toExternalForm()
+        );
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == createType) {
+                boolean valid = true;
+                titleError.setVisible(false); titleError.setManaged(false);
+                priorityError.setVisible(false); priorityError.setManaged(false);
+                hoursError.setVisible(false); hoursError.setManaged(false);
+                descError.setVisible(false); descError.setManaged(false);
+
+                String titleVal = titleField.getText() != null ? titleField.getText().trim() : "";
+                if (titleVal.isEmpty()) {
+                    titleError.setText("Title is required"); titleError.setVisible(true); titleError.setManaged(true); valid = false;
+                } else if (titleVal.length() < 3) {
+                    titleError.setText("Title must be at least 3 characters"); titleError.setVisible(true); titleError.setManaged(true); valid = false;
+                } else if (titleVal.length() > 200) {
+                    titleError.setText("Title must be at most 200 characters"); titleError.setVisible(true); titleError.setManaged(true); valid = false;
+                }
+
+                String priorityVal = priorityCombo.getSelectionModel().getSelectedItem();
+                if (priorityVal == null) {
+                    priorityError.setText("Priority is required"); priorityError.setVisible(true); priorityError.setManaged(true); valid = false;
+                }
+
+                String hoursText = hoursField.getText() != null ? hoursField.getText().trim() : "";
+                Float hoursVal = null;
+                if (!hoursText.isEmpty()) {
+                    try {
+                        hoursVal = Float.parseFloat(hoursText);
+                        if (hoursVal <= 0) {
+                            hoursError.setText("Hours must be a positive number"); hoursError.setVisible(true); hoursError.setManaged(true); valid = false;
+                        }
+                    } catch (NumberFormatException ex) {
+                        hoursError.setText("Please enter a valid number"); hoursError.setVisible(true); hoursError.setManaged(true); valid = false;
+                    }
+                }
+
+                String descVal = descArea.getText() != null ? descArea.getText().trim() : "";
+                if (descVal.length() > 500) {
+                    descError.setText("Description must be at most 500 characters"); descError.setVisible(true); descError.setManaged(true); valid = false;
+                }
+
+                if (!valid) return null;
+
+                Task newTask = new Task();
+                newTask.setProjectId(PROJECT_ID);
+                newTask.setSprintId(null); // backlog — no sprint
+                newTask.setTitle(titleVal);
+                newTask.setDescription(descVal.isEmpty() ? null : descVal);
+                newTask.setColumnName("TODO");
+                newTask.setStatus("TODO");
+                newTask.setPriority(priorityVal);
+                newTask.setEstimatedHours(hoursVal);
+
+                User selectedAssignee = assigneeCombo.getSelectionModel().getSelectedItem();
+                newTask.setAssignedTo(selectedAssignee != null ? selectedAssignee.getUserId() : null);
+
+                return newTask;
+            }
+            return null;
+        });
+
+        Optional<Task> result = dialog.showAndWait();
+        result.ifPresent(newTask -> {
+            try {
+                taskService.create(newTask);
+                backlogTasks.add(0, newTask);
+                refreshBacklogList();
+            } catch (SQLException e) {
+                showError("Failed to create task: " + e.getMessage());
+            }
+        });
+    }
+
+    // ══════════════════════════════════════════════════════
+    //   CREATE SPRINT DIALOG
+    // ══════════════════════════════════════════════════════
+
+    @FXML
+    private void onCreateSprint(ActionEvent event) {
+        openCreateSprintDialog();
+    }
+
+    private void openCreateSprintDialog() {
+        Dialog<Sprint> dialog = new Dialog<>();
+        dialog.setTitle("New Sprint");
+        dialog.setHeaderText("Create a new sprint");
+
+        ButtonType createType = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(createType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(12);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 20, 10, 20));
+        grid.setPrefWidth(460);
+
+        // Sprint number (auto)
+        int nextNumber;
+        try {
+            nextNumber = sprintService.getNextSprintNumber(PROJECT_ID);
+        } catch (SQLException e) {
+            nextNumber = sprintSelector.getItems().size() + 1;
+        }
+
+        Label numberLabel = new Label("Sprint #");
+        numberLabel.getStyleClass().add("dialog-label");
+        Label numberValue = new Label(String.valueOf(nextNumber));
+        numberValue.setStyle("-fx-font-size: 14px; -fx-font-weight: 700; -fx-text-fill: -spark-ink;");
+        final int sprintNumber = nextNumber;
+
+        // Title
+        Label titleLabel = new Label("Title *");
+        titleLabel.getStyleClass().add("dialog-label");
+        TextField titleField = new TextField();
+        titleField.getStyleClass().add("dialog-field");
+        titleField.setPromptText("e.g. Authentication Layer");
+        titleField.setPrefWidth(300);
+        Label titleError = new Label();
+        titleError.getStyleClass().add("validation-error");
+        titleError.setVisible(false);
+        titleError.setManaged(false);
+
+        // Start Date
+        Label startLabel = new Label("Start Date *");
+        startLabel.getStyleClass().add("dialog-label");
+        DatePicker startPicker = new DatePicker();
+        startPicker.getStyleClass().add("dialog-combo");
+        startPicker.setPrefWidth(300);
+        startPicker.setPromptText("Select start date");
+        Label startError = new Label();
+        startError.getStyleClass().add("validation-error");
+        startError.setVisible(false);
+        startError.setManaged(false);
+
+        // End Date
+        Label endLabel = new Label("End Date *");
+        endLabel.getStyleClass().add("dialog-label");
+        DatePicker endPicker = new DatePicker();
+        endPicker.getStyleClass().add("dialog-combo");
+        endPicker.setPrefWidth(300);
+        endPicker.setPromptText("Select end date");
+        Label endError = new Label();
+        endError.getStyleClass().add("validation-error");
+        endError.setVisible(false);
+        endError.setManaged(false);
+
+        // Goal
+        Label goalLabel = new Label("Goal");
+        goalLabel.getStyleClass().add("dialog-label");
+        TextArea goalArea = new TextArea();
+        goalArea.getStyleClass().add("dialog-textarea");
+        goalArea.setPromptText("Sprint goal (max 500 characters)");
+        goalArea.setPrefRowCount(3);
+        goalArea.setWrapText(true);
+        goalArea.setPrefWidth(300);
+        Label goalError = new Label();
+        goalError.getStyleClass().add("validation-error");
+        goalError.setVisible(false);
+        goalError.setManaged(false);
+
+        int sRow = 0;
+        grid.add(numberLabel, 0, sRow);  grid.add(numberValue, 1, sRow);    sRow++;
+        grid.add(titleLabel, 0, sRow);   grid.add(titleField, 1, sRow);     sRow++;
+        grid.add(new Label(), 0, sRow);  grid.add(titleError, 1, sRow);      sRow++;
+        grid.add(startLabel, 0, sRow);   grid.add(startPicker, 1, sRow);    sRow++;
+        grid.add(new Label(), 0, sRow);  grid.add(startError, 1, sRow);      sRow++;
+        grid.add(endLabel, 0, sRow);     grid.add(endPicker, 1, sRow);      sRow++;
+        grid.add(new Label(), 0, sRow);  grid.add(endError, 1, sRow);        sRow++;
+        grid.add(goalLabel, 0, sRow);    grid.add(goalArea, 1, sRow);       sRow++;
+        grid.add(new Label(), 0, sRow);  grid.add(goalError, 1, sRow);
+
+        dialog.getDialogPane().setContent(grid);
+        dialog.getDialogPane().getStylesheets().add(
+            getClass().getResource("/css/project-board.css").toExternalForm()
+        );
+        dialog.getDialogPane().getStylesheets().add(
+            getClass().getResource("/css/app-shell.css").toExternalForm()
+        );
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == createType) {
+                boolean valid = true;
+                titleError.setVisible(false); titleError.setManaged(false);
+                startError.setVisible(false); startError.setManaged(false);
+                endError.setVisible(false); endError.setManaged(false);
+                goalError.setVisible(false); goalError.setManaged(false);
+
+                // Title validation
+                String titleVal = titleField.getText() != null ? titleField.getText().trim() : "";
+                if (titleVal.isEmpty()) {
+                    titleError.setText("Title is required"); titleError.setVisible(true); titleError.setManaged(true); valid = false;
+                } else if (titleVal.length() < 3) {
+                    titleError.setText("Title must be at least 3 characters"); titleError.setVisible(true); titleError.setManaged(true); valid = false;
+                } else if (titleVal.length() > 200) {
+                    titleError.setText("Title must be at most 200 characters"); titleError.setVisible(true); titleError.setManaged(true); valid = false;
+                }
+
+                // Start date
+                LocalDate startDate = startPicker.getValue();
+                if (startDate == null) {
+                    startError.setText("Start date is required"); startError.setVisible(true); startError.setManaged(true); valid = false;
+                }
+
+                // End date
+                LocalDate endDate = endPicker.getValue();
+                if (endDate == null) {
+                    endError.setText("End date is required"); endError.setVisible(true); endError.setManaged(true); valid = false;
+                } else if (startDate != null && !endDate.isAfter(startDate)) {
+                    endError.setText("End date must be after start date"); endError.setVisible(true); endError.setManaged(true); valid = false;
+                }
+
+                // Goal
+                String goalVal = goalArea.getText() != null ? goalArea.getText().trim() : "";
+                if (goalVal.length() > 500) {
+                    goalError.setText("Goal must be at most 500 characters"); goalError.setVisible(true); goalError.setManaged(true); valid = false;
+                }
+
+                if (!valid) return null;
+
+                Sprint sprint = new Sprint();
+                sprint.setProjectId(PROJECT_ID);
+                sprint.setSprintNumber(sprintNumber);
+                sprint.setTitle(titleVal);
+                sprint.setStartDate(java.sql.Date.valueOf(startDate));
+                sprint.setEndDate(java.sql.Date.valueOf(endDate));
+                sprint.setGoal(goalVal.isEmpty() ? null : goalVal);
+                sprint.setStatus("PLANNED");
+                return sprint;
+            }
+            return null;
+        });
+
+        Optional<Sprint> result = dialog.showAndWait();
+        result.ifPresent(newSprint -> {
+            try {
+                sprintService.create(newSprint);
+                // Reload sprints and select the new one
+                loadSprints();
+                sprintSelector.getSelectionModel().select(newSprint);
+            } catch (SQLException e) {
+                showError("Failed to create sprint: " + e.getMessage());
+            }
+        });
+    }
+
     // ──── Filtering ────
     @FXML
     private void onFilterChanged(ActionEvent event) {
-        renderBoard();
+        renderActiveTab();
+    }
+
+    /** Routes rendering to the active tab. */
+    private void renderActiveTab() {
+        if (activeTab == tabBoard) renderBoard();
+        else if (activeTab == tabBacklog) refreshBacklogList();
     }
 
     private List<Task> getFilteredTasks() {

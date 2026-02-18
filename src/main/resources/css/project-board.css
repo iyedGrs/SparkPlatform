@@ -553,6 +553,159 @@
     -fx-text-fill: -spark-muted;
 }
 
+/* ─── NEW SPRINT BUTTON ─── */
+.new-sprint-btn {
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-text-fill: -spark-muted;
+    -fx-font-size: 16px;
+    -fx-font-weight: 300;
+    -fx-padding: 2 8 2 8;
+    -fx-cursor: hand;
+}
+
+.new-sprint-btn:hover {
+    -fx-background-color: -spark-bg;
+    -fx-text-fill: -spark-accent;
+    -fx-border-color: -spark-accent;
+}
+
+/* ─── BACKLOG VIEW ─── */
+.backlog-toolbar {
+    -fx-padding: 12 24 8 24;
+    -fx-spacing: 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-color: -spark-card;
+}
+
+.backlog-count-badge {
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -spark-muted;
+    -fx-background-color: -spark-bg;
+    -fx-background-radius: 10;
+    -fx-padding: 2 10 2 10;
+}
+
+.backlog-create-btn {
+    -fx-background-color: -spark-accent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-padding: 6 16 6 16;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: -spark-accent;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 6;
+}
+
+.backlog-create-btn:hover {
+    -fx-background-color: #1D4ED8;
+    -fx-border-color: #1D4ED8;
+}
+
+.backlog-list {
+    -fx-padding: 0 24 16 24;
+    -fx-spacing: 0;
+    -fx-background-color: -spark-card;
+}
+
+.backlog-list-border {
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-background-color: -spark-card;
+}
+
+.backlog-row {
+    -fx-padding: 10 14 10 14;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cursor: hand;
+    -fx-spacing: 10;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.backlog-row:hover {
+    -fx-background-color: -spark-soft;
+}
+
+.backlog-row-last {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.backlog-chevron {
+    -fx-font-size: 10px;
+    -fx-text-fill: -spark-subtle;
+    -fx-min-width: 16;
+    -fx-pref-width: 16;
+    -fx-alignment: CENTER;
+}
+
+.backlog-task-id {
+    -fx-font-size: 12px;
+    -fx-font-family: "JetBrains Mono";
+    -fx-text-fill: -spark-muted;
+    -fx-min-width: 70;
+}
+
+.backlog-task-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -spark-ink;
+}
+
+.backlog-expanded {
+    -fx-padding: 8 14 12 40;
+    -fx-spacing: 8;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.backlog-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+    -fx-wrap-text: true;
+}
+
+.backlog-move-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -spark-accent;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 4 0 0 0;
+    -fx-cursor: hand;
+}
+
+.backlog-move-btn:hover {
+    -fx-text-fill: #1D4ED8;
+    -fx-underline: true;
+}
+
+.backlog-empty {
+    -fx-alignment: CENTER;
+    -fx-padding: 60 0 0 0;
+    -fx-spacing: 8;
+}
+
+.backlog-empty-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+.backlog-empty-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+}
+
 /* ─── PLACEHOLDER (for unimplemented tabs) ─── */
 .board-placeholder {
     -fx-alignment: CENTER;

@@ -130,6 +130,33 @@ public class TaskService {
         }
     }
 
+    // ──── BACKLOG: tasks with no sprint ────
+    public List<Task> findBacklog(int projectId) throws SQLException {
+        String sql = "SELECT * FROM tasks WHERE project_id = ? AND sprint_id IS NULL ORDER BY created_at DESC";
+        List<Task> tasks = new ArrayList<>();
+        try (Connection conn = db.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, projectId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    tasks.add(mapRow(rs));
+                }
+            }
+        }
+        return tasks;
+    }
+
+    // ──── MOVE TO SPRINT ────
+    public void moveToSprint(int taskId, int sprintId) throws SQLException {
+        String sql = "UPDATE tasks SET sprint_id = ? WHERE task_id = ?";
+        try (Connection conn = db.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, sprintId);
+            ps.setInt(2, taskId);
+            ps.executeUpdate();
+        }
+    }
+
     // ──── ROW MAPPER ────
     private Task mapRow(ResultSet rs) throws SQLException {
         Task t = new Task();

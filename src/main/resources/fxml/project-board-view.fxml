@@ -35,6 +35,7 @@
             </padding>
 
             <ComboBox fx:id="sprintSelector" styleClass="sprint-combo" promptText="Select Sprint" onAction="#onSprintChanged" />
+            <Button text="+" styleClass="new-sprint-btn" onAction="#onCreateSprint" />
 
             <Label fx:id="sprintDates" text="" styleClass="sprint-dates" />
             <Label fx:id="sprintStatus" text="" styleClass="sprint-status" />
@@ -78,6 +79,12 @@
                 </padding>
                 <!-- Columns are built programmatically by the controller -->
             </HBox>
+        </ScrollPane>
+
+        <!-- Backlog view (hidden by default) -->
+        <ScrollPane fx:id="backlogScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                    styleClass="board-scroll" visible="false" managed="false">
+            <VBox fx:id="backlogContent" spacing="0" />
         </ScrollPane>
 
         <!-- Detail overlay (hidden by default) -->
