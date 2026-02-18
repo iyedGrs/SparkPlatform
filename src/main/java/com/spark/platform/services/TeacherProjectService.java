@@ -20,7 +20,15 @@ public class TeacherProjectService {
 
     // ──── Classrooms ────
 
-    /** Get all active classrooms. */
+    /**
+     * Get all active classrooms.
+     * TODO: HARDCODED — returns ALL classrooms. Should filter by teacher's courses:
+     *   SELECT DISTINCT c.* FROM classrooms c
+     *   JOIN users u ON u.classroom_id = c.classroom_id
+     *   JOIN student_courses sc ON sc.student_id = u.user_id
+     *   JOIN teacher_courses tc ON tc.course_id = sc.course_id
+     *   WHERE tc.teacher_id = ? AND c.status = 'ACTIVE'
+     */
     public List<Classroom> findAllClassrooms() throws SQLException {
         List<Classroom> list = new ArrayList<>();
         String sql = "SELECT * FROM classrooms WHERE status = 'ACTIVE' ORDER BY name";
@@ -44,7 +52,11 @@ public class TeacherProjectService {
         }
     }
 
-    /** Count projects in a classroom. */
+    /**
+     * Count projects in a classroom.
+     * TODO: HARDCODED — counts ALL projects in classroom. Should filter by teacher's courses:
+     *   WHERE classroom_id = ? AND course_id IN (SELECT course_id FROM teacher_courses WHERE teacher_id = ?)
+     */
     public int countProjectsInClassroom(int classroomId) throws SQLException {
         String sql = "SELECT COUNT(*) FROM projects WHERE classroom_id = ?";
         try (Connection conn = db(); PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -57,7 +69,11 @@ public class TeacherProjectService {
 
     // ──── Projects per Classroom ────
 
-    /** Get all projects belonging to the given classroom. */
+    /**
+     * Get all projects belonging to the given classroom.
+     * TODO: HARDCODED — returns ALL projects in classroom. Should filter by teacher's courses:
+     *   WHERE classroom_id = ? AND course_id IN (SELECT course_id FROM teacher_courses WHERE teacher_id = ?)
+     */
     public List<Project> findProjectsByClassroom(int classroomId) throws SQLException {
         List<Project> list = new ArrayList<>();
         String sql = "SELECT * FROM projects WHERE classroom_id = ? ORDER BY title";
@@ -159,8 +175,8 @@ public class TeacherProjectService {
 
     /** Create a new project and return the generated ID. */
     public int createProject(Project project) throws SQLException {
-        String sql = "INSERT INTO projects (title, description, repo_url, template_type, start_date, end_date, status, classroom_id) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO projects (title, description, repo_url, template_type, start_date, end_date, status, classroom_id, course_id) " +
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = db();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, project.getTitle());
@@ -174,6 +190,11 @@ public class TeacherProjectService {
                 ps.setInt(8, project.getClassroomId());
             } else {
                 ps.setNull(8, java.sql.Types.INTEGER);
+            }
+            if (project.getCourseId() != null) {
+                ps.setInt(9, project.getCourseId());
+            } else {
+                ps.setNull(9, java.sql.Types.INTEGER);
             }
             ps.executeUpdate();
             try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -246,6 +267,7 @@ public class TeacherProjectService {
         p.setEndDate(rs.getDate("end_date"));
         p.setStatus(rs.getString("status"));
         p.setClassroomId(rs.getObject("classroom_id", Integer.class));
+        p.setCourseId(rs.getObject("course_id", Integer.class));
         p.setCreatedAt(rs.getTimestamp("created_at"));
         return p;
     }

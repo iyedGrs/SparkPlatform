@@ -525,6 +525,8 @@ public class TeacherProjectsController {
                 }
                 p.setStatus("ACTIVE");
                 p.setClassroomId(selectedClassroom.getClassroomId());
+                // TODO: HARDCODED — set courseId from a Course dropdown once teacher-course scoping is wired
+                // p.setCourseId(selectedCourseId);
                 return p;
             }
             return null;

@@ -63,7 +63,8 @@ public class ProjectBoardController {
     private final SprintService sprintService = new SprintService();
 
     // ──── State ────
-    private static final int PROJECT_ID = 1; // current project
+    // TODO: HARDCODED — replace with dynamic project selection from logged-in user context (RBAC)
+    private static final int PROJECT_ID = 1;
     private final String[] COLUMNS = {"TODO", "IN_PROGRESS", "REVIEW", "DONE"};
     private final Map<String, String> COLUMN_LABELS = new LinkedHashMap<>();
     private List<Task> allTasks = new ArrayList<>();
