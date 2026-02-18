@@ -1,0 +1,758 @@
+/* ═══════════════════════════════════════════════════════
+   SparkPlatform — Project Board Stylesheet
+   Matches the spark demo Kanban board design.
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── BOARD ROOT ─── */
+.board-root {
+    -fx-background-color: -spark-card;
+}
+
+/* ─── HEADER ─── */
+.board-header {
+    -fx-background-color: -spark-card;
+}
+
+.project-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-ink;
+}
+
+.project-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+    -fx-padding: 4 0 0 0;
+}
+
+/* ─── BACK BUTTON ─── */
+.back-btn {
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #0066cc;
+    -fx-background-color: transparent;
+    -fx-padding: 4 8 4 8;
+    -fx-cursor: hand;
+}
+
+.back-btn:hover {
+    -fx-text-fill: #0052a3;
+    -fx-underline: true;
+}
+
+.back-btn:pressed {
+    -fx-text-fill: #003d7a;
+}
+
+/* ─── SPRINT ROW ─── */
+.sprint-combo {
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 4 8 4 8;
+    -fx-pref-width: 260;
+}
+
+.sprint-dates {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+}
+
+.sprint-status {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+    -fx-font-weight: 500;
+}
+
+.stats-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+}
+
+.stats-bold {
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+/* ─── TEAM AVATARS ─── */
+.team-avatars {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.team-avatar {
+    -fx-background-radius: 100;
+    -fx-min-width: 28;
+    -fx-pref-width: 28;
+    -fx-max-width: 28;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+    -fx-alignment: CENTER;
+    -fx-border-color: -spark-card;
+    -fx-border-width: 2;
+    -fx-border-radius: 100;
+}
+
+.team-avatar-text {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-ink;
+}
+
+/* ─── TAB BAR ─── */
+.tab-bar {
+    -fx-background-color: -spark-card;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 24 0 24;
+}
+
+.tab-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -spark-muted;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-padding: 10 16 10 16;
+    -fx-cursor: hand;
+    -fx-border-color: transparent transparent transparent transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+.tab-btn:hover {
+    -fx-text-fill: -spark-ink;
+}
+
+.tab-btn.active {
+    -fx-text-fill: -spark-ink;
+    -fx-border-color: transparent transparent -spark-accent transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+/* ─── FILTER BAR ─── */
+.filter-bar {
+    -fx-background-color: -spark-card;
+}
+
+.search-field {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-prompt-text-fill: -spark-subtle;
+}
+
+.search-field:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.filter-combo {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 3 6 3 6;
+}
+
+.filter-divider {
+    -fx-background-color: -spark-border;
+    -fx-pref-width: 1;
+}
+
+/* ─── BOARD CONTAINER ─── */
+.board-container {
+    -fx-background-color: -spark-card;
+}
+
+.board-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.board-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.kanban-columns {
+    -fx-alignment: TOP_LEFT;
+}
+
+/* ─── KANBAN COLUMN ─── */
+.kanban-column {
+    -fx-background-color: -spark-soft;
+    -fx-background-radius: 8;
+    -fx-min-width: 272;
+    -fx-pref-width: 272;
+}
+
+.column-header {
+    -fx-padding: 10 12 6 12;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.column-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-muted;
+    -fx-letter-spacing: 0.5;
+}
+
+.column-count {
+    -fx-font-size: 11px;
+    -fx-font-family: "JetBrains Mono";
+    -fx-text-fill: -spark-subtle;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+    -fx-background-radius: 3;
+    -fx-padding: 1 6 1 6;
+}
+
+.column-cards {
+    -fx-padding: 0 8 4 8;
+    -fx-spacing: 8;
+}
+
+.column-cards-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.column-cards-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.column-add-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -spark-muted;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 8 12 10 12;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER_LEFT;
+    -fx-graphic-text-gap: 6;
+    -fx-max-width: 99999;
+    -fx-background-radius: 0 0 8 8;
+}
+
+.column-add-btn:hover {
+    -fx-background-color: -spark-border;
+    -fx-text-fill: -spark-ink;
+}
+
+.add-icon {
+    -fx-background-color: -spark-muted;
+    -fx-shape: "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z";
+    -fx-min-width: 14;
+    -fx-max-width: 14;
+    -fx-pref-width: 14;
+    -fx-min-height: 14;
+    -fx-max-height: 14;
+    -fx-pref-height: 14;
+}
+
+/* ─── TASK CARD ─── */
+.task-card {
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 12;
+    -fx-cursor: hand;
+}
+
+.task-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 6, 0, 0, 2);
+}
+
+.task-card-dragging {
+    -fx-opacity: 0.5;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.25), 8, 0, 0, 2);
+}
+
+.column-drag-over {
+    -fx-background-color: rgba(37,99,235,0.06);
+    -fx-border-color: #2563EB;
+    -fx-border-width: 2;
+    -fx-border-style: dashed;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.task-card-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -spark-ink;
+    -fx-wrap-text: true;
+}
+
+.task-card-id {
+    -fx-font-size: 11px;
+    -fx-font-family: "JetBrains Mono";
+    -fx-text-fill: -spark-muted;
+}
+
+.task-label-chip {
+    -fx-font-size: 10px;
+    -fx-font-weight: 500;
+    -fx-padding: 1 6 1 6;
+    -fx-background-radius: 3;
+}
+
+.priority-dot {
+    -fx-min-width: 10;
+    -fx-max-width: 10;
+    -fx-pref-width: 10;
+    -fx-min-height: 10;
+    -fx-max-height: 10;
+    -fx-pref-height: 10;
+    -fx-background-radius: 100;
+}
+
+.priority-high {
+    -fx-background-color: #EF4444;
+}
+.priority-medium {
+    -fx-background-color: #F59E0B;
+}
+.priority-low {
+    -fx-background-color: #22C55E;
+}
+.priority-critical {
+    -fx-background-color: #DC2626;
+}
+
+.story-points-badge {
+    -fx-font-size: 10px;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-weight: 500;
+    -fx-text-fill: -spark-muted-2;
+    -fx-background-color: -spark-bg;
+    -fx-background-radius: 100;
+    -fx-min-width: 20;
+    -fx-pref-width: 20;
+    -fx-max-width: 20;
+    -fx-min-height: 20;
+    -fx-pref-height: 20;
+    -fx-max-height: 20;
+    -fx-alignment: CENTER;
+}
+
+.card-avatar {
+    -fx-background-radius: 100;
+    -fx-min-width: 24;
+    -fx-pref-width: 24;
+    -fx-max-width: 24;
+    -fx-min-height: 24;
+    -fx-pref-height: 24;
+    -fx-max-height: 24;
+    -fx-alignment: CENTER;
+}
+
+.card-avatar-text {
+    -fx-font-size: 9px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-ink;
+}
+
+/* ─── DETAIL OVERLAY ─── */
+.detail-overlay {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+
+.detail-panel {
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 0 0 0 1;
+    -fx-pref-width: 480;
+    -fx-min-width: 480;
+    -fx-max-width: 480;
+}
+
+.detail-panel-header {
+    -fx-padding: 16 24 16 24;
+    -fx-background-color: -spark-bg;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.detail-task-id {
+    -fx-font-size: 14px;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+.detail-task-title-header {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+    -fx-padding: 2 0 0 4;
+}
+
+.detail-close-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-text-fill: -spark-subtle;
+    -fx-font-size: 16px;
+}
+
+.detail-close-btn:hover {
+    -fx-background-color: -spark-bg;
+    -fx-text-fill: -spark-muted-2;
+}
+
+.detail-body {
+    -fx-padding: 20 24 20 24;
+    -fx-spacing: 20;
+}
+
+.detail-field-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-muted;
+    -fx-padding: 0 0 6 0;
+}
+
+.detail-title-field {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-ink;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-prompt-text-fill: -spark-subtle;
+}
+
+.detail-title-field:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.detail-select {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 8 6 8;
+    -fx-max-width: 99999;
+}
+
+.detail-select:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.detail-textarea {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-ink;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-pref-row-count: 4;
+}
+
+.detail-textarea:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.detail-hours-field {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-prompt-text-fill: -spark-subtle;
+}
+
+.detail-hours-field:focused {
+    -fx-border-color: -spark-accent;
+}
+
+/* ─── DETAIL ACTION BUTTONS ─── */
+.detail-save-btn {
+    -fx-background-color: -spark-accent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: -spark-accent;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.detail-save-btn:hover {
+    -fx-background-color: #1D4ED8;
+    -fx-border-color: #1D4ED8;
+}
+
+.detail-delete-btn {
+    -fx-background-color: -spark-card;
+    -fx-text-fill: #EF4444;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+}
+
+.detail-delete-btn:hover {
+    -fx-background-color: #FEF2F2;
+    -fx-border-color: #EF4444;
+}
+
+/* ─── VALIDATION ERROR ─── */
+.validation-error {
+    -fx-text-fill: #EF4444;
+    -fx-font-size: 11px;
+    -fx-padding: 2 0 0 0;
+}
+
+.field-error {
+    -fx-border-color: #EF4444;
+}
+
+/* ─── DIALOG STYLING ─── */
+.dialog-field {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+    -fx-prompt-text-fill: -spark-subtle;
+}
+
+.dialog-field:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.dialog-combo {
+    -fx-font-size: 13px;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 3 6 3 6;
+}
+
+.dialog-combo:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.dialog-textarea {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-ink;
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5 10 5 10;
+}
+
+.dialog-textarea:focused {
+    -fx-border-color: -spark-accent;
+}
+
+.dialog-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-muted;
+}
+
+/* ─── NEW SPRINT BUTTON ─── */
+.new-sprint-btn {
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-text-fill: -spark-muted;
+    -fx-font-size: 16px;
+    -fx-font-weight: 300;
+    -fx-padding: 2 8 2 8;
+    -fx-cursor: hand;
+}
+
+.new-sprint-btn:hover {
+    -fx-background-color: -spark-bg;
+    -fx-text-fill: -spark-accent;
+    -fx-border-color: -spark-accent;
+}
+
+/* ─── BACKLOG VIEW ─── */
+.backlog-toolbar {
+    -fx-padding: 12 24 8 24;
+    -fx-spacing: 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-color: -spark-card;
+}
+
+.backlog-count-badge {
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -spark-muted;
+    -fx-background-color: -spark-bg;
+    -fx-background-radius: 10;
+    -fx-padding: 2 10 2 10;
+}
+
+.backlog-create-btn {
+    -fx-background-color: -spark-accent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-padding: 6 16 6 16;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-border-color: -spark-accent;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 6;
+}
+
+.backlog-create-btn:hover {
+    -fx-background-color: #1D4ED8;
+    -fx-border-color: #1D4ED8;
+}
+
+.backlog-list {
+    -fx-padding: 0 24 16 24;
+    -fx-spacing: 0;
+    -fx-background-color: -spark-card;
+}
+
+.backlog-list-border {
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-background-color: -spark-card;
+}
+
+.backlog-row {
+    -fx-padding: 10 14 10 14;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cursor: hand;
+    -fx-spacing: 10;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.backlog-row:hover {
+    -fx-background-color: -spark-soft;
+}
+
+.backlog-row-last {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.backlog-chevron {
+    -fx-font-size: 10px;
+    -fx-text-fill: -spark-subtle;
+    -fx-min-width: 16;
+    -fx-pref-width: 16;
+    -fx-alignment: CENTER;
+}
+
+.backlog-task-id {
+    -fx-font-size: 12px;
+    -fx-font-family: "JetBrains Mono";
+    -fx-text-fill: -spark-muted;
+    -fx-min-width: 70;
+}
+
+.backlog-task-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -spark-ink;
+}
+
+.backlog-expanded {
+    -fx-padding: 8 14 12 40;
+    -fx-spacing: 8;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.backlog-desc {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+    -fx-wrap-text: true;
+}
+
+.backlog-move-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -spark-accent;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-padding: 4 0 0 0;
+    -fx-cursor: hand;
+}
+
+.backlog-move-btn:hover {
+    -fx-text-fill: #1D4ED8;
+    -fx-underline: true;
+}
+
+.backlog-empty {
+    -fx-alignment: CENTER;
+    -fx-padding: 60 0 0 0;
+    -fx-spacing: 8;
+}
+
+.backlog-empty-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+.backlog-empty-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+}
+
+/* ─── PLACEHOLDER (for unimplemented tabs) ─── */
+.board-placeholder {
+    -fx-alignment: CENTER;
+    -fx-spacing: 8;
+    -fx-padding: 60 0 0 0;
+}
+
+.board-placeholder-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+.board-placeholder-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+}

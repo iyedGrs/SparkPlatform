@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.spark.platform.controllers.ProjectBoardController"
+      stylesheets="@../css/project-board.css"
+      styleClass="board-root">
+
+    <!-- ═══════ HEADER ═══════ -->
+    <VBox styleClass="board-header">
+        <padding>
+            <Insets top="20" right="24" bottom="0" left="24" />
+        </padding>
+
+        <!-- Back button -->
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Button fx:id="backButton" text="← Back to Projects" styleClass="back-btn" onAction="#onBackClick" />
+        </HBox>
+
+        <!-- Project title -->
+        <Label fx:id="projectTitleLabel" text="Loading..." styleClass="project-title" />
+        <Label fx:id="projectSubtitleLabel" text="" styleClass="project-subtitle" />
+
+        <!-- Sprint selector + stats row -->
+        <HBox styleClass="sprint-row" spacing="20" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="16" />
+            </padding>
+
+            <ComboBox fx:id="sprintSelector" styleClass="sprint-combo" promptText="Select Sprint" onAction="#onSprintChanged" />
+            <Button text="+" styleClass="new-sprint-btn" onAction="#onCreateSprint" />
+
+            <Label fx:id="sprintDates" text="" styleClass="sprint-dates" />
+            <Label fx:id="sprintStatus" text="" styleClass="sprint-status" />
+
+            <!-- Team avatars -->
+            <HBox fx:id="teamAvatars" styleClass="team-avatars" spacing="-4" alignment="CENTER_LEFT" />
+
+            <!-- Stats -->
+            <Label fx:id="statsLabel" text="" styleClass="stats-label" />
+        </HBox>
+    </VBox>
+
+    <!-- ═══════ TAB BAR ═══════ -->
+    <HBox styleClass="tab-bar" spacing="0">
+        <padding>
+            <Insets left="24" right="24" />
+        </padding>
+        <Button fx:id="tabBoard" text="Board" styleClass="tab-btn,active" onAction="#onTabClick" />
+        <Button fx:id="tabBacklog" text="Backlog" styleClass="tab-btn" onAction="#onTabClick" />
+        <Button fx:id="tabTimeline" text="Timeline" styleClass="tab-btn" onAction="#onTabClick" />
+        <Button fx:id="tabActivity" text="Activity" styleClass="tab-btn" onAction="#onTabClick" />
+    </HBox>
+
+    <!-- ═══════ FILTER BAR ═══════ -->
+    <HBox fx:id="filterBar" styleClass="filter-bar" spacing="12" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="8" right="24" bottom="8" left="24" />
+        </padding>
+        <TextField fx:id="searchField" promptText="Search tasks..." styleClass="search-field" prefWidth="200" />
+        <Region styleClass="filter-divider" prefWidth="1" prefHeight="20" />
+        <ComboBox fx:id="priorityFilter" styleClass="filter-combo" promptText="Priority" prefWidth="110" onAction="#onFilterChanged" />
+        <ComboBox fx:id="assigneeFilter" styleClass="filter-combo" promptText="Assignee" prefWidth="140" onAction="#onFilterChanged" />
+    </HBox>
+
+    <!-- ═══════ KANBAN BOARD ═══════ -->
+    <StackPane VBox.vgrow="ALWAYS" styleClass="board-container">
+        <ScrollPane fx:id="boardScroll" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" styleClass="board-scroll">
+            <HBox fx:id="kanbanColumns" styleClass="kanban-columns" spacing="12">
+                <padding>
+                    <Insets top="12" right="24" bottom="16" left="24" />
+                </padding>
+                <!-- Columns are built programmatically by the controller -->
+            </HBox>
+        </ScrollPane>
+
+        <!-- Backlog view (hidden by default) -->
+        <ScrollPane fx:id="backlogScroll" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                    styleClass="board-scroll" visible="false" managed="false">
+            <VBox fx:id="backlogContent" spacing="0" />
+        </ScrollPane>
+
+        <!-- Detail overlay (hidden by default) -->
+        <HBox fx:id="detailOverlay" styleClass="detail-overlay" visible="false" managed="false" />
+    </StackPane>
+
+</VBox>

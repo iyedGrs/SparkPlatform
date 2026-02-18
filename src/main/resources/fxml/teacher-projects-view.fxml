@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.spark.platform.controllers.TeacherProjectsController"
+      stylesheets="@../css/teacher-projects.css"
+      styleClass="tp-root">
+
+    <!-- ═══════ HEADER ═══════ -->
+    <VBox styleClass="tp-view-header">
+        <padding>
+            <Insets top="24" right="32" bottom="0" left="32" />
+        </padding>
+
+        <Label fx:id="viewTitle" text="My Classes" styleClass="tp-view-title" />
+        <Label fx:id="viewSubtitle" text="Select a class to manage its projects" styleClass="tp-view-subtitle" />
+
+        <!-- Breadcrumb -->
+        <HBox fx:id="breadcrumbBar" styleClass="tp-breadcrumb-bar" spacing="6" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="16" />
+            </padding>
+        </HBox>
+    </VBox>
+
+    <!-- ═══════ CONTENT AREA ═══════ -->
+    <StackPane fx:id="contentArea" styleClass="tp-content-area" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets top="16" right="32" bottom="24" left="32" />
+        </padding>
+    </StackPane>
+</VBox>
