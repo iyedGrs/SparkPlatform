@@ -15,8 +15,6 @@ public class Project {
     private String status;
     private Integer classroomId;
     private Integer courseId;
-    private Integer classroomId;
-    private Integer courseId;
     private Timestamp createdAt;
 
     public Project() {}
@@ -47,12 +45,6 @@ public class Project {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-
-    public Integer getClassroomId() { return classroomId; }
-    public void setClassroomId(Integer classroomId) { this.classroomId = classroomId; }
-
-    public Integer getCourseId() { return courseId; }
-    public void setCourseId(Integer courseId) { this.courseId = courseId; }
 
     public Integer getClassroomId() { return classroomId; }
     public void setClassroomId(Integer classroomId) { this.classroomId = classroomId; }
