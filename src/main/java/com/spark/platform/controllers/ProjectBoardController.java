@@ -12,8 +12,10 @@ import com.spark.platform.services.TaskService;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 public class ProjectBoardController {
 
     // ──── FXML bindings ────
+    @FXML private Button backButton;
     @FXML private Label projectTitleLabel;
     @FXML private Label projectSubtitleLabel;
     @FXML private ComboBox<Sprint> sprintSelector;
@@ -242,6 +245,34 @@ public class ProjectBoardController {
             StackPane avatar = buildAvatar(u.getName(), 28, AVATAR_COLORS[i % AVATAR_COLORS.length]);
             teamAvatars.getChildren().add(avatar);
             i++;
+        }
+    }
+
+    // ──── Navigation ────
+    @FXML
+    private void onBackClick(ActionEvent event) {
+        try {
+            // Load the Student Projects view back
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/student-projects-view.fxml"));
+            VBox projectsView = loader.load();
+            
+            // Find the content outlet in AppShell
+            Node root = backButton.getScene().getRoot();
+            StackPane contentOutlet = (StackPane) root.lookup("#contentOutlet");
+            
+            if (contentOutlet != null) {
+                contentOutlet.getChildren().clear();
+                contentOutlet.getChildren().add(projectsView);
+                
+                // Update page title
+                Label pageTitle = (Label) root.lookup("#pageTitle");
+                if (pageTitle != null) {
+                    pageTitle.setText("Project Board");
+                }
+            }
+        } catch (Exception e) {
+            showError("Failed to go back: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

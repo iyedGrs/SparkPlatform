@@ -24,6 +24,11 @@
             <Insets top="20" right="24" bottom="0" left="24" />
         </padding>
 
+        <!-- Back button -->
+        <HBox spacing="8" alignment="CENTER_LEFT">
+            <Button fx:id="backButton" text="← Back to Projects" styleClass="back-btn" onAction="#onBackClick" />
+        </HBox>
+
         <!-- Project title -->
         <Label fx:id="projectTitleLabel" text="Loading..." styleClass="project-title" />
         <Label fx:id="projectSubtitleLabel" text="" styleClass="project-subtitle" />
