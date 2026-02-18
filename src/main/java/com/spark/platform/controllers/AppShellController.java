@@ -15,37 +15,26 @@ import java.util.Map;
 
 /**
  * Controller for the shared app-shell layout.
- *
- * <h3>How other devs plug in their module</h3>
- * <ol>
- *   <li>Create your module FXML under {@code /fxml/} (e.g. {@code grades-view.fxml})</li>
- *   <li>Register it in {@link #PAGE_META} with a matching button fx:id key</li>
- *   <li>The shell loads your FXML into the center outlet and updates the topbar title</li>
- * </ol>
+ * Matches the spark demo design: 4 nav items + settings, navbar with page title.
  */
 public class AppShellController {
 
     // ──── FXML bindings ────
     @FXML private StackPane contentOutlet;
     @FXML private Label     pageTitle;
-    @FXML private Label     pageSubtitle;
-
-    @FXML private VBox navGroupCore;
-    @FXML private VBox navGroupLabs;
+    @FXML private Label     avatarInitials;
+    @FXML private VBox      navGroup;
 
     // ──── Page registry ────
-    // Each entry: nav-button fx:id  ->  { fxmlPath, title, subtitle }
     private static final Map<String, String[]> PAGE_META = new HashMap<>();
 
     static {
-        //  fx:id               FXML resource path                   Title              Subtitle
-        PAGE_META.put("navDashboard",     new String[]{null,                            "Dashboard",       "Your academic cockpit"});
-        PAGE_META.put("navClassroom",     new String[]{"/fxml/classroom-view.fxml",     "Classroom",       "Courses & materials"});
-        PAGE_META.put("navGrades",        new String[]{"/fxml/grades-view.fxml",        "Grades",          "Track your performance"});
-        PAGE_META.put("navScheduler",     new String[]{"/fxml/scheduler-view.fxml",     "Scheduler",       "Plan your week"});
-        PAGE_META.put("navSparkyAI",      new String[]{"/fxml/sparky-ai-view.fxml",     "Sparky AI",       "Your study assistant"});
-        PAGE_META.put("navProjectBoard",  new String[]{"/fxml/project-board-view.fxml", "Project Board",   "Agile project management"});
-        PAGE_META.put("navOpportunities", new String[]{"/fxml/opportunities-view.fxml", "Opportunities",   "Internships & careers"});
+        //  fx:id               FXML resource path                   Title
+        PAGE_META.put("navClassroom",     new String[]{"/fxml/classroom-view.fxml",     "Classroom"});
+        PAGE_META.put("navSparkAI",       new String[]{"/fxml/spark-ai-view.fxml",      "Spark AI"});
+        PAGE_META.put("navProjectBoard",  new String[]{"/fxml/project-board-view.fxml", "Project Board"});
+        PAGE_META.put("navOpportunities", new String[]{"/fxml/opportunities-view.fxml", "Opportunities"});
+        PAGE_META.put("navSettings",      new String[]{"/fxml/settings-view.fxml",      "Settings"});
     }
 
     private Button activeNavButton;
@@ -53,17 +42,25 @@ public class AppShellController {
     // ──── Initialization ────
     @FXML
     private void initialize() {
-        // Mark "Dashboard" as the default active button
-        if (navGroupCore != null && !navGroupCore.getChildren().isEmpty()) {
-            activeNavButton = (Button) navGroupCore.getChildren().get(0);
+        // Default: Project Board is active (matches the FXML where it has "active" class)
+        if (navGroup != null) {
+            for (Node child : navGroup.getChildren()) {
+                if (child instanceof Button btn && "navProjectBoard".equals(btn.getId())) {
+                    activeNavButton = btn;
+                    break;
+                }
+            }
         }
+        // Load the default page
+        loadIntoOutlet(null);
+        showPlaceholder("Project Board");
     }
 
-    // ──── Navigation handler (every sidebar button calls this) ────
+    // ──── Navigation handler ────
     @FXML
     private void onNavClick(ActionEvent event) {
         Button clicked = (Button) event.getSource();
-        if (clicked == activeNavButton) return;          // already there
+        if (clicked == activeNavButton) return;
 
         // Swap active styling
         if (activeNavButton != null) {
@@ -77,70 +74,51 @@ public class AppShellController {
         String[] meta = PAGE_META.get(id);
         if (meta == null) return;
 
-        // Update topbar
+        // Update navbar title
         pageTitle.setText(meta[1]);
-        pageSubtitle.setText(meta[2]);
 
-        // Load module FXML into outlet (or show default welcome for Dashboard)
+        // Load module FXML into outlet
         loadIntoOutlet(meta[0]);
+    }
+
+    // ──── Profile dropdown handler ────
+    @FXML
+    private void onProfileClick(ActionEvent event) {
+        // TODO: Show profile dropdown (Profile, Account, Logout)
     }
 
     /**
      * Loads a module FXML into the center outlet.
-     * Pass {@code null} to restore the default welcome card.
+     * Pass null to clear.
      */
     public void loadIntoOutlet(String fxmlPath) {
         contentOutlet.getChildren().clear();
 
-        if (fxmlPath == null) {
-            showDefaultWelcome();
-            return;
-        }
+        if (fxmlPath == null) return;
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Node view = loader.load();
             contentOutlet.getChildren().add(view);
         } catch (IOException e) {
-            // Module FXML not created yet — show a placeholder
             showPlaceholder(pageTitle.getText());
         }
     }
 
-    /** The welcome card shown on Dashboard / first launch. */
-    private void showDefaultWelcome() {
-        Label title = new Label("Welcome to Spark");
-        title.getStyleClass().add("card-title");
-
-        Label body = new Label("This shared shell keeps navigation consistent.\n"
-                + "Each module view loads into this outlet area.");
-        body.getStyleClass().add("card-body");
-        body.setWrapText(true);
-
-        VBox card = new VBox(12, title, body);
-        card.getStyleClass().add("content-card");
-        card.setMaxWidth(760);
-
-        contentOutlet.getChildren().add(card);
-    }
-
     /** Placeholder shown when a module FXML hasn't been created yet. */
     private void showPlaceholder(String moduleName) {
+        contentOutlet.getChildren().clear();
+
         Label title = new Label(moduleName);
-        title.getStyleClass().add("card-title");
+        title.getStyleClass().add("placeholder-title");
 
-        Label body = new Label("This module is under construction.\n"
-                + "The developer assigned to this module will add the view here.");
-        body.getStyleClass().add("card-body");
-        body.setWrapText(true);
+        Label body = new Label("Coming Soon");
+        body.getStyleClass().add("placeholder-body");
 
-        Label pill = new Label("Coming soon");
-        pill.getStyleClass().add("pill");
+        VBox container = new VBox(8, title, body);
+        container.getStyleClass().add("placeholder-container");
+        container.setMaxWidth(400);
 
-        VBox card = new VBox(12, title, body, pill);
-        card.getStyleClass().add("content-card");
-        card.setMaxWidth(760);
-
-        contentOutlet.getChildren().add(card);
+        contentOutlet.getChildren().add(container);
     }
 }
