@@ -1,4 +1,4 @@
-package com.classroom;
+package com.spark.platform;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

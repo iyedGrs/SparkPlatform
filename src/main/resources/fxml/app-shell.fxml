@@ -13,7 +13,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.classroom.controllers.AppShellController"
+            fx:controller="com.spark.platform.controllers.AppShellController"
             stylesheets="@../css/app-shell.css"
             styleClass="app-root">
 

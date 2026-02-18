@@ -1,4 +1,4 @@
-package com.classroom.controllers;
+package com.spark.platform.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
