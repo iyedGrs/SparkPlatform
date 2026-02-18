@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.spark.platform.views.ClassroomViewController"
+      stylesheets="@../css/classroom-view.css"
+      spacing="16"
+      styleClass="classroom-view">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="12">
+            <children>
+                <VBox spacing="4">
+                    <children>
+                        <Label text="Classes / Cours / Sessions" styleClass="view-title"/>
+                        <Label fx:id="summaryLabel" text="Chargement..." styleClass="view-subtitle"/>
+                    </children>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Rafraichir" onAction="#onRefreshClick" styleClass="refresh-button"/>
+            </children>
+        </HBox>
+
+        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="crud-toolbar">
+            <children>
+                <Button fx:id="addClassroomButton" text="Ajouter classe" onAction="#onAddClassroomClick" styleClass="action-button primary-action"/>
+                <Button fx:id="editClassroomButton" text="Modifier classe" onAction="#onEditClassroomClick" styleClass="action-button"/>
+                <Button fx:id="deleteClassroomButton" text="Supprimer classe" onAction="#onDeleteClassroomClick" styleClass="action-button danger-action"/>
+                <Button fx:id="addCourseButton" text="Ajouter cours" onAction="#onAddCourseClick" styleClass="action-button primary-action"/>
+                <Button fx:id="editCourseButton" text="Modifier cours" onAction="#onEditCourseClick" styleClass="action-button"/>
+                <Button fx:id="deleteCourseButton" text="Supprimer cours" onAction="#onDeleteCourseClick" styleClass="action-button danger-action"/>
+                <Button fx:id="addSessionButton" text="Ajouter seance" onAction="#onAddSessionClick" styleClass="action-button primary-action"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="selectionLabel" text="Selection: aucune" styleClass="selection-label"/>
+            </children>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="view-scroll">
+            <content>
+                <VBox fx:id="classesContainer" spacing="12" styleClass="classes-container">
+                    <padding>
+                        <Insets top="4" right="4" bottom="4" left="4"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</VBox>

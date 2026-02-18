@@ -1,0 +1,138 @@
+.classroom-view {
+    -fx-background-color: #ffffff;
+}
+
+.view-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0f172a;
+}
+
+.view-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748b;
+}
+
+.refresh-button {
+    -fx-background-color: #1d4ed8;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: 600;
+    -fx-background-radius: 8;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.refresh-button:hover {
+    -fx-background-color: #1e40af;
+}
+
+.view-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.view-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.classes-container {
+    -fx-background-color: transparent;
+}
+
+.class-card {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 14;
+    -fx-spacing: 10;
+}
+
+.clickable-card {
+    -fx-cursor: hand;
+}
+
+.class-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0f172a;
+}
+
+.class-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #475569;
+}
+
+.course-card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dbeafe;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-spacing: 6;
+}
+
+.class-card.clickable-card:hover,
+.course-card.clickable-card:hover {
+    -fx-border-color: #93c5fd;
+}
+
+.class-card.selected-card {
+    -fx-border-color: #2563eb;
+    -fx-background-color: #eff6ff;
+}
+
+.course-card.selected-card {
+    -fx-border-color: #2563eb;
+    -fx-background-color: #f8fbff;
+}
+
+.course-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1e293b;
+}
+
+.course-meta {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748b;
+}
+
+.session-row {
+    -fx-background-color: #f8fafc;
+    -fx-border-color: #e2e8f0;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 8 10 8 10;
+}
+
+.session-slot {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1e293b;
+}
+
+.session-details {
+    -fx-font-size: 12px;
+    -fx-text-fill: #475569;
+}
+
+.sessions-container {
+    -fx-spacing: 6;
+}
+
+.interaction-hint {
+    -fx-font-size: 11px;
+    -fx-text-fill: #2563eb;
+    -fx-font-weight: 600;
+}
+
+.empty-message {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748b;
+}
+
+.error-message {
+    -fx-font-size: 12px;
+    -fx-text-fill: #b91c1c;
+}
