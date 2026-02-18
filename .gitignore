@@ -84,3 +84,7 @@ ai-engine/.venv/
 *.env
 
 .kiro
+
+*.md
+
+spark demo/*

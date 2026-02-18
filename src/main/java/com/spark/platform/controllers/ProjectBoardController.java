@@ -13,6 +13,10 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.util.StringConverter;
 
@@ -69,6 +73,9 @@ public class ProjectBoardController {
     // Backlog state
     private List<Task> backlogTasks = new ArrayList<>();
     private final Set<Integer> expandedBacklogTasks = new HashSet<>();
+
+    // Drag-and-drop data format
+    private static final DataFormat TASK_ID_FORMAT = new DataFormat("application/x-spark-task-id");
 
     // Avatar colors palette
     private static final String[] AVATAR_COLORS = {
@@ -943,11 +950,55 @@ public class ProjectBoardController {
         // ─── Cards ───
         VBox cardsContainer = new VBox();
         cardsContainer.getStyleClass().add("column-cards");
+        cardsContainer.setMinHeight(60);
+        javafx.scene.layout.VBox.setVgrow(cardsContainer, javafx.scene.layout.Priority.ALWAYS);
 
         for (Task task : tasks) {
             VBox card = buildTaskCard(task);
             cardsContainer.getChildren().add(card);
         }
+
+        // ─── Drop target: accept tasks dragged from other columns ───
+        cardsContainer.setOnDragOver(event -> {
+            if (event.getGestureSource() != cardsContainer && event.getDragboard().hasContent(TASK_ID_FORMAT)) {
+                event.acceptTransferModes(TransferMode.MOVE);
+            }
+            event.consume();
+        });
+        cardsContainer.setOnDragEntered(event -> {
+            if (event.getDragboard().hasContent(TASK_ID_FORMAT)) {
+                cardsContainer.getStyleClass().add("column-drag-over");
+            }
+            event.consume();
+        });
+        cardsContainer.setOnDragExited(event -> {
+            cardsContainer.getStyleClass().remove("column-drag-over");
+            event.consume();
+        });
+        cardsContainer.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasContent(TASK_ID_FORMAT)) {
+                int taskId = (int) db.getContent(TASK_ID_FORMAT);
+                try {
+                    taskService.updateStatus(taskId, columnKey, columnKey);
+                    // Update the in-memory task
+                    allTasks.stream()
+                        .filter(t -> t.getTaskId() == taskId)
+                        .findFirst()
+                        .ifPresent(t -> {
+                            t.setColumnName(columnKey);
+                            t.setStatus(columnKey);
+                        });
+                    success = true;
+                } catch (SQLException ex) {
+                    showError("Failed to move task: " + ex.getMessage());
+                }
+            }
+            event.setDropCompleted(success);
+            event.consume();
+            if (success) renderBoard();
+        });
 
         ScrollPane cardsScroll = new ScrollPane(cardsContainer);
         cardsScroll.getStyleClass().add("column-cards-scroll");
@@ -1037,6 +1088,20 @@ public class ProjectBoardController {
             card.getChildren().add(labelsRow);
         }
         card.getChildren().addAll(title, bottomRow);
+
+        // ─── Drag: start drag on mouse press ───
+        card.setOnDragDetected(event -> {
+            Dragboard db = card.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.put(TASK_ID_FORMAT, task.getTaskId());
+            db.setContent(content);
+            card.getStyleClass().add("task-card-dragging");
+            event.consume();
+        });
+        card.setOnDragDone(event -> {
+            card.getStyleClass().remove("task-card-dragging");
+            event.consume();
+        });
 
         // Click to open detail panel
         card.setOnMouseClicked(e -> openDetailPanel(task));
