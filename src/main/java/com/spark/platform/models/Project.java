@@ -13,6 +13,11 @@ public class Project {
     private Date startDate;
     private Date endDate;
     private String status;
+<<<<<<< Updated upstream
+=======
+    private Integer classroomId;
+    private Integer courseId;
+>>>>>>> Stashed changes
     private Timestamp createdAt;
 
     public Project() {}
@@ -44,6 +49,15 @@ public class Project {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+<<<<<<< Updated upstream
+=======
+    public Integer getClassroomId() { return classroomId; }
+    public void setClassroomId(Integer classroomId) { this.classroomId = classroomId; }
+
+    public Integer getCourseId() { return courseId; }
+    public void setCourseId(Integer courseId) { this.courseId = courseId; }
+
+>>>>>>> Stashed changes
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
 

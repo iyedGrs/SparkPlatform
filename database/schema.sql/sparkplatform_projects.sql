@@ -32,9 +32,15 @@ CREATE TABLE `projects` (
   `start_date` date DEFAULT NULL,
   `end_date` date DEFAULT NULL,
   `status` varchar(50) NOT NULL DEFAULT 'ACTIVE',
+  `classroom_id` int DEFAULT NULL,
+  `course_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`project_id`),
-  KEY `idx_projects_status` (`status`)
+  KEY `idx_projects_status` (`status`),
+  KEY `fk_projects_classroom` (`classroom_id`),
+  KEY `fk_projects_course` (`course_id`),
+  CONSTRAINT `fk_projects_classroom` FOREIGN KEY (`classroom_id`) REFERENCES `classrooms` (`classroom_id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_projects_course` FOREIGN KEY (`course_id`) REFERENCES `courses` (`course_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
