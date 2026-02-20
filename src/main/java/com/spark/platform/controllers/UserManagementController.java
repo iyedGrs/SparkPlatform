@@ -93,7 +93,7 @@ public class UserManagementController {
     }
 
     // ═══════════════════════════════════════════════════════
-    // SUMMARY CARDS
+    // SUMMARY CARDS — Enhanced with Gradients, Icons & Animations
     // ═══════════════════════════════════════════════════════
 
     private HBox buildSummaryRow() {
@@ -101,30 +101,76 @@ public class UserManagementController {
         long teachers = allUsers.stream().filter(u -> "TEACHER".equals(u.getUserType())).count();
         long admins = allUsers.stream().filter(u -> "ADMINISTRATOR".equals(u.getUserType())).count();
 
-        HBox row = new HBox(16);
+        HBox row = new HBox(20);
         row.getChildren().addAll(
-                buildSummaryCard("Total Users", String.valueOf(allUsers.size()), "#3B82F6"),
-                buildSummaryCard("Students", String.valueOf(students), "#10B981"),
-                buildSummaryCard("Teachers", String.valueOf(teachers), "#8B5CF6"),
-                buildSummaryCard("Admins", String.valueOf(admins), "#EF4444")
+                buildSummaryCard("Total Users", String.valueOf(allUsers.size()), "um-card-total", "um-icon-users"),
+                buildSummaryCard("Students", String.valueOf(students), "um-card-students", "um-icon-student"),
+                buildSummaryCard("Teachers", String.valueOf(teachers), "um-card-teachers", "um-icon-teacher"),
+                buildSummaryCard("Admins", String.valueOf(admins), "um-card-admins", "um-icon-admin")
         );
         return row;
     }
 
-    private VBox buildSummaryCard(String label, String value, String color) {
-        VBox card = new VBox(4);
-        card.getStyleClass().add("um-summary-card");
-        HBox.setHgrow(card, Priority.ALWAYS);
+    private StackPane buildSummaryCard(String label, String value, String cardStyleClass, String iconStyleClass) {
+        // Outer wrapper (StackPane for layered effects)
+        StackPane cardWrapper = new StackPane();
+        cardWrapper.getStyleClass().addAll("um-summary-card", cardStyleClass);
+        HBox.setHgrow(cardWrapper, Priority.ALWAYS);
+        
+        // Add hover animation
+        cardWrapper.setOnMouseEntered(e -> {
+            cardWrapper.setScaleX(1.03);
+            cardWrapper.setScaleY(1.03);
+        });
+        cardWrapper.setOnMouseExited(e -> {
+            cardWrapper.setScaleX(1.0);
+            cardWrapper.setScaleY(1.0);
+        });
+
+        // Decorative orbs (background)
+        Region orb1 = new Region();
+        orb1.getStyleClass().addAll("um-card-orb", "um-card-orb-1");
+        StackPane.setAlignment(orb1, Pos.TOP_RIGHT);
+        orb1.setTranslateX(20);
+        orb1.setTranslateY(-20);
+
+        Region orb2 = new Region();
+        orb2.getStyleClass().addAll("um-card-orb", "um-card-orb-2");
+        StackPane.setAlignment(orb2, Pos.BOTTOM_LEFT);
+        orb2.setTranslateX(-10);
+        orb2.setTranslateY(10);
+
+        // Main content container
+        HBox contentRow = new HBox(16);
+        contentRow.setAlignment(Pos.CENTER_LEFT);
+        StackPane.setAlignment(contentRow, Pos.CENTER_LEFT);
+
+        // Icon circle
+        StackPane iconCircle = new StackPane();
+        iconCircle.getStyleClass().add("um-card-icon-circle");
+
+        Region icon = new Region();
+        icon.getStyleClass().addAll("um-card-icon", iconStyleClass);
+        iconCircle.getChildren().add(icon);
+
+        // Text content
+        VBox textContent = new VBox(2);
+        textContent.setAlignment(Pos.CENTER_LEFT);
 
         Label valueLabel = new Label(value);
         valueLabel.getStyleClass().add("um-summary-value");
-        valueLabel.setStyle("-fx-text-fill: " + color + ";");
 
         Label nameLabel = new Label(label);
         nameLabel.getStyleClass().add("um-summary-label");
 
-        card.getChildren().addAll(valueLabel, nameLabel);
-        return card;
+        textContent.getChildren().addAll(valueLabel, nameLabel);
+
+        contentRow.getChildren().addAll(iconCircle, textContent);
+
+        // Assemble layers
+        cardWrapper.getChildren().addAll(orb1, orb2, contentRow);
+
+        return cardWrapper;
     }
 
     // ═══════════════════════════════════════════════════════
@@ -350,7 +396,7 @@ public class UserManagementController {
     }
 
     // ═══════════════════════════════════════════════════════
-    // CREATE USER DIALOG
+    // CREATE USER DIALOG — Enhanced with Gradient Header
     // ═══════════════════════════════════════════════════════
 
     private void openCreateUserDialog() {
@@ -364,19 +410,44 @@ public class UserManagementController {
         // ── Build content ──
         VBox content = new VBox();
 
-        // Header
-        VBox header = new VBox(4);
-        header.getStyleClass().add("um-dialog-header");
+        // Enhanced Gradient Header with icon
+        StackPane headerWrapper = new StackPane();
+        headerWrapper.getStyleClass().add("um-dialog-header");
+        
+        // Decorative orbs in header
+        Region headerOrb1 = new Region();
+        headerOrb1.getStyleClass().addAll("um-dialog-orb", "um-dialog-orb-1");
+        StackPane.setAlignment(headerOrb1, Pos.TOP_RIGHT);
+        headerOrb1.setTranslateX(30);
+        headerOrb1.setTranslateY(-30);
+        headerOrb1.setMouseTransparent(true);
+        
+        Region headerOrb2 = new Region();
+        headerOrb2.getStyleClass().addAll("um-dialog-orb", "um-dialog-orb-2");
+        StackPane.setAlignment(headerOrb2, Pos.BOTTOM_LEFT);
+        headerOrb2.setTranslateX(-20);
+        headerOrb2.setTranslateY(15);
+        headerOrb2.setMouseTransparent(true);
+        
+        // Header content
+        VBox headerContent = new VBox(6);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+        
+        // Icon container
+        StackPane iconContainer = new StackPane();
+        iconContainer.getStyleClass().add("um-dialog-header-icon");
+        Region headerIcon = new Region();
+        headerIcon.getStyleClass().add("um-dialog-header-icon-graphic");
+        headerIcon.setStyle("-fx-shape: 'M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z';");
+        iconContainer.getChildren().add(headerIcon);
+        
         Label title = new Label("Create New User");
         title.getStyleClass().add("um-dialog-title");
         Label subtitle = new Label("Add a new student, teacher, or administrator account");
         subtitle.getStyleClass().add("um-dialog-subtitle");
-        header.getChildren().addAll(title, subtitle);
-
-        // Divider
-        Region divider = new Region();
-        divider.getStyleClass().add("um-dialog-divider");
-        divider.setMaxWidth(Double.MAX_VALUE);
+        headerContent.getChildren().addAll(iconContainer, title, subtitle);
+        
+        headerWrapper.getChildren().addAll(headerOrb1, headerOrb2, headerContent);
 
         // Form fields
         VBox form = new VBox();
@@ -432,20 +503,27 @@ public class UserManagementController {
         phoneField.setPromptText("+216 XX XXX XXX");
         phoneField.getStyleClass().add("um-field-input");
 
+        // Enhanced hint with gradient background
+        HBox hintBox = new HBox(10);
+        hintBox.getStyleClass().add("um-dialog-hint");
+        hintBox.setAlignment(Pos.CENTER_LEFT);
+        Region hintIcon = new Region();
+        hintIcon.getStyleClass().add("um-hint-icon");
         Label hint = new Label("Password will be generated automatically and shown after creation.");
-        hint.getStyleClass().add("um-dialog-hint");
+        hint.setStyle("-fx-text-fill: #64748B; -fx-font-size: 12px;");
+        hintBox.getChildren().addAll(hintIcon, hint);
 
         form.getChildren().addAll(
                 makeFieldGroup("Full Name", nameField),
                 makeFieldGroup("Email Address", emailField),
                 roleRow,
                 makeFieldGroup("Phone (optional)", phoneField),
-                hint
+                hintBox
         );
 
-        content.getChildren().addAll(header, divider, form);
+        content.getChildren().addAll(headerWrapper, form);
         dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().setPrefWidth(480);
+        dialog.getDialogPane().setPrefWidth(520);
 
         // Disable create button until required fields filled
         Button createButton = (Button) dialog.getDialogPane().lookupButton(createBtnType);
@@ -508,7 +586,7 @@ public class UserManagementController {
     }
 
     // ═══════════════════════════════════════════════════════
-    // EDIT USER DIALOG
+    // EDIT USER DIALOG — Enhanced with Gradient Header
     // ═══════════════════════════════════════════════════════
 
     private void openEditUserDialog(User user) {
@@ -522,18 +600,44 @@ public class UserManagementController {
         // ── Build content ──
         VBox content = new VBox();
 
-        // Header
-        VBox header = new VBox(4);
-        header.getStyleClass().add("um-dialog-header");
+        // Enhanced Gradient Header with icon
+        StackPane headerWrapper = new StackPane();
+        headerWrapper.getStyleClass().add("um-dialog-header");
+        
+        // Decorative orbs in header
+        Region headerOrb1 = new Region();
+        headerOrb1.getStyleClass().addAll("um-dialog-orb", "um-dialog-orb-1");
+        StackPane.setAlignment(headerOrb1, Pos.TOP_RIGHT);
+        headerOrb1.setTranslateX(30);
+        headerOrb1.setTranslateY(-30);
+        headerOrb1.setMouseTransparent(true);
+        
+        Region headerOrb2 = new Region();
+        headerOrb2.getStyleClass().addAll("um-dialog-orb", "um-dialog-orb-2");
+        StackPane.setAlignment(headerOrb2, Pos.BOTTOM_LEFT);
+        headerOrb2.setTranslateX(-20);
+        headerOrb2.setTranslateY(15);
+        headerOrb2.setMouseTransparent(true);
+        
+        // Header content
+        VBox headerContent = new VBox(6);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+        
+        // Icon container
+        StackPane iconContainer = new StackPane();
+        iconContainer.getStyleClass().add("um-dialog-header-icon");
+        Region headerIcon = new Region();
+        headerIcon.getStyleClass().add("um-dialog-header-icon-graphic");
+        headerIcon.setStyle("-fx-shape: 'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z';");
+        iconContainer.getChildren().add(headerIcon);
+        
         Label title = new Label("Edit User");
         title.getStyleClass().add("um-dialog-title");
         Label subtitle = new Label("Modify account details for " + user.getName());
         subtitle.getStyleClass().add("um-dialog-subtitle");
-        header.getChildren().addAll(title, subtitle);
-
-        Region divider = new Region();
-        divider.getStyleClass().add("um-dialog-divider");
-        divider.setMaxWidth(Double.MAX_VALUE);
+        headerContent.getChildren().addAll(iconContainer, title, subtitle);
+        
+        headerWrapper.getChildren().addAll(headerOrb1, headerOrb2, headerContent);
 
         // Form
         VBox form = new VBox();
@@ -612,9 +716,9 @@ public class UserManagementController {
                 statusRow
         );
 
-        content.getChildren().addAll(header, divider, form);
+        content.getChildren().addAll(headerWrapper, form);
         dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().setPrefWidth(480);
+        dialog.getDialogPane().setPrefWidth(520);
 
         dialog.setResultConverter(btn -> {
             if (btn == saveBtnType) {
@@ -684,15 +788,106 @@ public class UserManagementController {
     // ═══════════════════════════════════════════════════════
     // DELETE USER
     // ═══════════════════════════════════════════════════════
+    // DELETE USER DIALOG — Enhanced with Danger Theme
+    // ═══════════════════════════════════════════════════════
 
     private void handleDeleteUser(User user) {
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Are you sure you want to delete " + user.getName() + "?\nThis action cannot be undone.",
-                ButtonType.YES, ButtonType.NO);
-        confirm.setTitle("Delete User");
-        confirm.setHeaderText("Confirm Deletion");
-        confirm.showAndWait().ifPresent(bt -> {
-            if (bt == ButtonType.YES) {
+        Dialog<Boolean> dialog = new Dialog<>();
+        dialog.setTitle("Spark");
+
+        ButtonType deleteBtnType = new ButtonType("Delete User", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(deleteBtnType, ButtonType.CANCEL);
+        applyDialogStyle(dialog.getDialogPane(), "um-delete-dialog-pane");
+
+        VBox content = new VBox();
+
+        // Red gradient header
+        StackPane headerWrapper = new StackPane();
+        headerWrapper.getStyleClass().add("um-delete-header");
+
+        // Decorative orbs
+        Region headerOrb1 = new Region();
+        headerOrb1.getStyleClass().add("um-delete-orb-1");
+        StackPane.setAlignment(headerOrb1, Pos.TOP_RIGHT);
+        headerOrb1.setTranslateX(30);
+        headerOrb1.setTranslateY(-30);
+        headerOrb1.setMouseTransparent(true);
+
+        Region headerOrb2 = new Region();
+        headerOrb2.getStyleClass().add("um-delete-orb-2");
+        StackPane.setAlignment(headerOrb2, Pos.BOTTOM_LEFT);
+        headerOrb2.setTranslateX(-20);
+        headerOrb2.setTranslateY(15);
+        headerOrb2.setMouseTransparent(true);
+
+        // Header content
+        VBox headerContent = new VBox(6);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
+
+        // Delete icon
+        StackPane iconContainer = new StackPane();
+        iconContainer.getStyleClass().add("um-delete-header-icon");
+        Region headerIcon = new Region();
+        headerIcon.getStyleClass().add("um-delete-header-icon-graphic");
+        headerIcon.setStyle("-fx-shape: 'M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z';");
+        iconContainer.getChildren().add(headerIcon);
+
+        Label title = new Label("Delete User");
+        title.getStyleClass().add("um-dialog-title");
+        Label subtitle = new Label("This action cannot be undone");
+        subtitle.getStyleClass().add("um-dialog-subtitle");
+        headerContent.getChildren().addAll(iconContainer, title, subtitle);
+
+        headerWrapper.getChildren().addAll(headerOrb1, headerOrb2, headerContent);
+
+        // Body
+        VBox body = new VBox();
+        body.getStyleClass().add("um-delete-body");
+
+        // User info card
+        VBox userCard = new VBox(8);
+        userCard.getStyleClass().add("um-delete-user-card");
+        userCard.setAlignment(Pos.CENTER_LEFT);
+
+        HBox userRow = new HBox(12);
+        userRow.setAlignment(Pos.CENTER_LEFT);
+
+        StackPane avatar = buildAvatar(user.getName(), user.getUserId());
+
+        VBox userInfo = new VBox(2);
+        Label userName = new Label(user.getName());
+        userName.getStyleClass().add("um-delete-user-name");
+        Label userEmail = new Label(user.getEmail());
+        userEmail.getStyleClass().add("um-delete-user-email");
+        userInfo.getChildren().addAll(userName, userEmail);
+
+        Label roleBadge = new Label(formatRole(user.getUserType()));
+        roleBadge.getStyleClass().addAll("um-delete-user-badge", getRoleBadgeClass(user.getUserType()));
+
+        userRow.getChildren().addAll(avatar, userInfo, roleBadge);
+        userCard.getChildren().add(userRow);
+
+        // Warning message
+        HBox warningBox = new HBox(10);
+        warningBox.getStyleClass().add("um-delete-warning");
+        warningBox.setAlignment(Pos.CENTER_LEFT);
+        Region warningIcon = new Region();
+        warningIcon.getStyleClass().add("um-delete-warning-icon");
+        Label warning = new Label("All data associated with this user will be permanently removed from the system.");
+        warning.setStyle("-fx-text-fill: #991B1B; -fx-font-size: 13px; -fx-font-weight: 500;");
+        warning.setWrapText(true);
+        warningBox.getChildren().addAll(warningIcon, warning);
+
+        body.getChildren().addAll(userCard, warningBox);
+        content.getChildren().addAll(headerWrapper, body);
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().setPrefWidth(440);
+
+        dialog.setResultConverter(btn -> btn == deleteBtnType);
+
+        dialog.showAndWait().ifPresent(confirmed -> {
+            if (confirmed) {
                 try {
                     userService.delete(user.getUserId());
                     loadUsers();
@@ -717,16 +912,34 @@ public class UserManagementController {
 
         VBox content = new VBox();
 
-        // Header with success icon
-        VBox header = new VBox(8);
-        header.getStyleClass().add("um-cred-header");
-        header.setAlignment(Pos.CENTER_LEFT);
+        // Enhanced Success header with gradient
+        StackPane headerWrapper = new StackPane();
+        headerWrapper.getStyleClass().add("um-cred-header");
+        
+        // Decorative orbs in header
+        Region headerOrb1 = new Region();
+        headerOrb1.getStyleClass().addAll("um-dialog-orb", "um-dialog-orb-1");
+        StackPane.setAlignment(headerOrb1, Pos.TOP_RIGHT);
+        headerOrb1.setTranslateX(30);
+        headerOrb1.setTranslateY(-30);
+        headerOrb1.setMouseTransparent(true);
+        
+        Region headerOrb2 = new Region();
+        headerOrb2.getStyleClass().addAll("um-dialog-orb", "um-dialog-orb-2");
+        StackPane.setAlignment(headerOrb2, Pos.BOTTOM_LEFT);
+        headerOrb2.setTranslateX(-20);
+        headerOrb2.setTranslateY(15);
+        headerOrb2.setMouseTransparent(true);
+        
+        // Header content
+        VBox headerContent = new VBox(8);
+        headerContent.setAlignment(Pos.CENTER_LEFT);
 
         StackPane iconCircle = new StackPane();
         iconCircle.getStyleClass().add("um-cred-icon");
-        iconCircle.setMinSize(44, 44);
-        iconCircle.setPrefSize(44, 44);
-        iconCircle.setMaxSize(44, 44);
+        iconCircle.setMinSize(52, 52);
+        iconCircle.setPrefSize(52, 52);
+        iconCircle.setMaxSize(52, 52);
         Label checkMark = new Label("\u2713");
         checkMark.getStyleClass().add("um-cred-icon-text");
         iconCircle.getChildren().add(checkMark);
@@ -735,7 +948,9 @@ public class UserManagementController {
         title.getStyleClass().add("um-cred-title");
         Label subtitle = new Label("Share these credentials securely with " + user.getName());
         subtitle.getStyleClass().add("um-cred-subtitle");
-        header.getChildren().addAll(iconCircle, title, subtitle);
+        headerContent.getChildren().addAll(iconCircle, title, subtitle);
+        
+        headerWrapper.getChildren().addAll(headerOrb1, headerOrb2, headerContent);
 
         // Credential card
         VBox body = new VBox();
@@ -770,15 +985,22 @@ public class UserManagementController {
 
         credCard.getChildren().addAll(emailRow, pwdRow, roleRow);
 
+        // Enhanced warning with icon
+        HBox warningBox = new HBox(10);
+        warningBox.getStyleClass().add("um-cred-warning");
+        warningBox.setAlignment(Pos.CENTER_LEFT);
+        Region warningIcon = new Region();
+        warningIcon.getStyleClass().add("um-warning-icon");
         Label warning = new Label("This password will not be shown again. Please save it now.");
-        warning.getStyleClass().add("um-cred-warning");
-        warning.setMaxWidth(Double.MAX_VALUE);
+        warning.setStyle("-fx-text-fill: #92400E; -fx-font-size: 13px; -fx-font-weight: 500;");
+        warningBox.getChildren().addAll(warningIcon, warning);
+        warningBox.setMaxWidth(Double.MAX_VALUE);
 
-        body.getChildren().addAll(credCard, warning);
-        content.getChildren().addAll(header, body);
+        body.getChildren().addAll(credCard, warningBox);
+        content.getChildren().addAll(headerWrapper, body);
 
         dialog.getDialogPane().setContent(content);
-        dialog.getDialogPane().setPrefWidth(440);
+        dialog.getDialogPane().setPrefWidth(480);
         dialog.showAndWait();
     }
 

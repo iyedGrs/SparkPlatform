@@ -1,9 +1,25 @@
 /* ═══════════════════════════════════════════════════════
    SparkPlatform — User Management Stylesheet
+   Enhanced with Gradient Effects & Dynamic Animations
    ═══════════════════════════════════════════════════════ */
 
+/* ─── DESIGN TOKENS (extended) ─── */
 .um-root {
     -fx-background-color: -spark-card;
+    
+    /* Gradient Palette (matching login theme) */
+    -um-gradient-1: #667EEA;
+    -um-gradient-2: #764BA2;
+    -um-gradient-3: #F093FB;
+    -um-gradient-4: #F5576C;
+    -um-gradient-5: #10B981;
+    -um-gradient-6: #06B6D4;
+    
+    /* Card-specific gradients */
+    -um-card-total: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
+    -um-card-students: linear-gradient(from 0% 0% to 100% 100%, #10B981 0%, #06B6D4 100%);
+    -um-card-teachers: linear-gradient(from 0% 0% to 100% 100%, #8B5CF6 0%, #EC4899 100%);
+    -um-card-admins: linear-gradient(from 0% 0% to 100% 100%, #F5576C 0%, #F59E0B 100%);
 }
 
 .um-view-header {
@@ -43,35 +59,170 @@
     -fx-background-color: transparent;
 }
 
-/* ─── SUMMARY CARDS ─── */
+/* ═══════════════════════════════════════════════════════
+   ENHANCED SUMMARY CARDS — Gradient Glass Morphism
+   ═══════════════════════════════════════════════════════ */
+
 .um-summary-card {
-    -fx-background-color: -spark-card;
-    -fx-border-color: -spark-border;
-    -fx-border-width: 1;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 16;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 4, 0, 0, 1);
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
+    -fx-background-radius: 16;
+    -fx-padding: 20 24;
+    -fx-min-height: 120;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.35), 16, 0, 0, 6);
+    -fx-cursor: hand;
+}
+
+.um-summary-card:hover {
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.5), 24, 0, 0, 10);
+}
+
+/* Individual card gradients */
+.um-card-total {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.35), 16, 0, 0, 6);
+}
+
+.um-card-total:hover {
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.5), 24, 0, 0, 10);
+}
+
+.um-card-students {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #10B981 0%, #06B6D4 100%);
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.35), 16, 0, 0, 6);
+}
+
+.um-card-students:hover {
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.5), 24, 0, 0, 10);
+}
+
+.um-card-teachers {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #8B5CF6 0%, #EC4899 100%);
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.35), 16, 0, 0, 6);
+}
+
+.um-card-teachers:hover {
+    -fx-effect: dropshadow(gaussian, rgba(139, 92, 246, 0.5), 24, 0, 0, 10);
+}
+
+.um-card-admins {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #F5576C 0%, #F59E0B 100%);
+    -fx-effect: dropshadow(gaussian, rgba(245, 87, 108, 0.35), 16, 0, 0, 6);
+}
+
+.um-card-admins:hover {
+    -fx-effect: dropshadow(gaussian, rgba(245, 87, 108, 0.5), 24, 0, 0, 10);
+}
+
+/* Card inner container for layered effects */
+.um-card-inner {
+    -fx-background-color: transparent;
+    -fx-spacing: 4;
+}
+
+/* Icon circle inside cards */
+.um-card-icon-circle {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 100;
+    -fx-min-width: 48;
+    -fx-max-width: 48;
+    -fx-pref-width: 48;
+    -fx-min-height: 48;
+    -fx-max-height: 48;
+    -fx-pref-height: 48;
+    -fx-alignment: center;
+}
+
+.um-card-icon {
+    -fx-background-color: #FFFFFF;
+    -fx-min-width: 22;
+    -fx-max-width: 22;
+    -fx-pref-width: 22;
+    -fx-min-height: 22;
+    -fx-max-height: 22;
+    -fx-pref-height: 22;
+}
+
+/* Icon shapes */
+.um-icon-users {
+    -fx-shape: "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2m8-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8m6 10v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75";
+}
+
+.um-icon-student {
+    -fx-shape: "M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z";
+}
+
+.um-icon-teacher {
+    -fx-shape: "M20 17a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H9.46c.35.61.54 1.3.54 2h10v11h-8v2h8zM15 7v2H9v10H7V7h8zm-6 5h4l-2 6-2-6z";
+}
+
+.um-icon-admin {
+    -fx-shape: "M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z";
+}
+
+/* Glass overlay effect */
+.um-card-glass {
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-radius: 16;
+    -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.1), 1, 0, 0, 1);
+}
+
+/* Animated orb decorations */
+.um-card-orb {
+    -fx-background-radius: 100;
+    -fx-opacity: 0.15;
+}
+
+.um-card-orb-1 {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-min-width: 80;
+    -fx-max-width: 80;
+    -fx-min-height: 80;
+    -fx-max-height: 80;
+}
+
+.um-card-orb-2 {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-min-width: 40;
+    -fx-max-width: 40;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
 }
 
 .um-summary-value {
-    -fx-font-size: 28px;
+    -fx-font-size: 36px;
     -fx-font-weight: 700;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 4, 0, 0, 2);
 }
 
 .um-summary-label {
-    -fx-font-size: 13px;
-    -fx-text-fill: -spark-muted;
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
     -fx-font-weight: 500;
 }
 
-/* ─── FILTER TABS ─── */
+/* Trend indicator (+ / - percentage) */
+.um-card-trend {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 100;
+    -fx-padding: 4 10;
+}
+
+.um-card-trend-text {
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #FFFFFF;
+}
+
+/* ─── FILTER TABS — Enhanced ─── */
 .um-filter-btn {
     -fx-background-color: transparent;
     -fx-text-fill: -spark-muted;
     -fx-font-size: 13px;
     -fx-font-weight: 500;
-    -fx-padding: 6 16;
+    -fx-padding: 8 18;
     -fx-background-radius: 99;
     -fx-cursor: hand;
     -fx-border-color: -spark-border;
@@ -80,17 +231,21 @@
 }
 
 .um-filter-btn.active {
-    -fx-background-color: -spark-ink;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
     -fx-text-fill: white;
-    -fx-border-color: -spark-ink;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.3), 8, 0, 0, 3);
 }
 
 .um-filter-btn:hover {
     -fx-background-color: -spark-border;
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
 .um-filter-btn.active:hover {
-    -fx-background-color: -spark-ink;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5A6FD6 0%, #6A4291 100%);
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.5), 12, 0, 0, 4);
 }
 
 /* ─── TOOLBAR ─── */
@@ -101,39 +256,45 @@
     -fx-padding: 0 0 0 12;
 }
 
-/* ─── CREATE BUTTON ─── */
+/* ─── CREATE BUTTON — Enhanced Gradient ─── */
 .um-create-btn {
-    -fx-background-color: -spark-accent;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
     -fx-text-fill: white;
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
     -fx-font-weight: 600;
-    -fx-padding: 8 16;
-    -fx-background-radius: 6;
+    -fx-padding: 10 20;
+    -fx-background-radius: 10;
     -fx-cursor: hand;
     -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 12, 0, 0, 4);
 }
 
 .um-create-btn:hover {
-    -fx-background-color: #1d4ed8;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5A6FD6 0%, #6A4291 100%);
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.6), 16, 0, 0, 6);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
 .um-create-btn:pressed {
-    -fx-background-color: #1e40af;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #4F5FC2 0%, #5E3A80 100%);
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
 }
 
-/* ─── TABLE ─── */
+/* ─── TABLE — Enhanced with subtle effects ─── */
 .um-header-row {
-    -fx-padding: 10 16;
+    -fx-padding: 12 20;
     -fx-border-color: transparent transparent -spark-border transparent;
     -fx-border-width: 0 0 1 0;
-    -fx-background-color: -spark-soft;
-    -fx-background-radius: 8 8 0 0;
+    -fx-background-color: linear-gradient(to right, rgba(102, 126, 234, 0.03), rgba(118, 75, 162, 0.03));
+    -fx-background-radius: 12 12 0 0;
 }
 
 .um-header-cell {
-    -fx-font-size: 12px;
-    -fx-font-weight: 600;
-    -fx-text-fill: -spark-subtle;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-muted;
     -fx-text-transform: uppercase;
 }
 
@@ -141,19 +302,20 @@
     -fx-background-color: -spark-card;
     -fx-border-color: -spark-border;
     -fx-border-width: 1;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 8, 0, 0, 2);
 }
 
 .um-row {
-    -fx-padding: 10 16;
+    -fx-padding: 14 20;
     -fx-border-color: transparent transparent -spark-border transparent;
     -fx-border-width: 0 0 1 0;
     -fx-background-color: transparent;
 }
 
 .um-row:hover {
-    -fx-background-color: -spark-soft;
+    -fx-background-color: linear-gradient(to right, rgba(102, 126, 234, 0.04), rgba(118, 75, 162, 0.02));
 }
 
 .um-cell-name {
@@ -172,67 +334,90 @@
     -fx-text-fill: -spark-muted;
 }
 
-/* ─── AVATAR ─── */
+/* ─── AVATAR — Enhanced with gradient border effect ─── */
 .um-avatar {
     -fx-background-radius: 100;
     -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 1);
 }
 
 .um-avatar-text {
-    -fx-font-size: 12px;
+    -fx-font-size: 11px;
     -fx-font-weight: 700;
     -fx-text-fill: white;
 }
 
-/* ─── BADGES ─── */
+/* ─── BADGES — Enhanced with subtle gradients ─── */
 .um-badge {
-    -fx-padding: 3 10;
+    -fx-padding: 4 12;
     -fx-background-radius: 99;
-    -fx-font-size: 12px;
+    -fx-font-size: 11px;
     -fx-font-weight: 600;
 }
 
 .um-badge-admin {
-    -fx-background-color: #fef2f2;
-    -fx-text-fill: #991b1b;
+    -fx-background-color: linear-gradient(to right, rgba(245, 87, 108, 0.15), rgba(245, 158, 11, 0.15));
+    -fx-text-fill: #C2410C;
+    -fx-border-color: rgba(245, 87, 108, 0.3);
+    -fx-border-radius: 99;
+    -fx-border-width: 1;
 }
 
 .um-badge-teacher {
-    -fx-background-color: #eef2ff;
-    -fx-text-fill: #4338ca;
+    -fx-background-color: linear-gradient(to right, rgba(139, 92, 246, 0.12), rgba(236, 72, 153, 0.12));
+    -fx-text-fill: #7C3AED;
+    -fx-border-color: rgba(139, 92, 246, 0.3);
+    -fx-border-radius: 99;
+    -fx-border-width: 1;
 }
 
 .um-badge-student {
-    -fx-background-color: #f0fdf4;
-    -fx-text-fill: #166534;
+    -fx-background-color: linear-gradient(to right, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.12));
+    -fx-text-fill: #059669;
+    -fx-border-color: rgba(16, 185, 129, 0.3);
+    -fx-border-radius: 99;
+    -fx-border-width: 1;
 }
 
 .um-badge-active {
-    -fx-background-color: #dcfce7;
-    -fx-text-fill: #166534;
+    -fx-background-color: linear-gradient(to right, rgba(16, 185, 129, 0.15), rgba(34, 197, 94, 0.15));
+    -fx-text-fill: #059669;
+    -fx-border-color: rgba(16, 185, 129, 0.35);
+    -fx-border-radius: 99;
+    -fx-border-width: 1;
 }
 
 .um-badge-inactive {
-    -fx-background-color: #fef2f2;
-    -fx-text-fill: #991b1b;
+    -fx-background-color: linear-gradient(to right, rgba(239, 68, 68, 0.12), rgba(248, 113, 113, 0.12));
+    -fx-text-fill: #DC2626;
+    -fx-border-color: rgba(239, 68, 68, 0.3);
+    -fx-border-radius: 99;
+    -fx-border-width: 1;
 }
 
-/* ─── ACTION BUTTONS ─── */
+/* ─── ACTION BUTTONS — Enhanced with hover animations ─── */
 .um-edit-btn {
     -fx-background-color: transparent;
-    -fx-text-fill: -spark-accent;
+    -fx-text-fill: #667EEA;
     -fx-font-size: 12px;
     -fx-font-weight: 600;
-    -fx-padding: 4 12;
-    -fx-border-color: -spark-border;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    -fx-padding: 6 14;
+    -fx-border-color: rgba(102, 126, 234, 0.3);
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-cursor: hand;
 }
 
 .um-edit-btn:hover {
-    -fx-background-color: -spark-soft;
-    -fx-border-color: -spark-accent;
+    -fx-background-color: rgba(102, 126, 234, 0.1);
+    -fx-border-color: #667EEA;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.um-edit-btn:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
 }
 
 .um-delete-btn {
@@ -240,16 +425,23 @@
     -fx-text-fill: #ef4444;
     -fx-font-size: 12px;
     -fx-font-weight: 600;
-    -fx-padding: 4 12;
-    -fx-border-color: #fecaca;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    -fx-padding: 6 14;
+    -fx-border-color: rgba(239, 68, 68, 0.3);
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-cursor: hand;
 }
 
 .um-delete-btn:hover {
-    -fx-background-color: #fef2f2;
+    -fx-background-color: rgba(239, 68, 68, 0.1);
     -fx-border-color: #ef4444;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.um-delete-btn:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
 }
 
 .um-reset-btn {
@@ -257,25 +449,36 @@
     -fx-text-fill: #f59e0b;
     -fx-font-size: 12px;
     -fx-font-weight: 600;
-    -fx-padding: 4 12;
-    -fx-border-color: #fde68a;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    -fx-padding: 6 14;
+    -fx-border-color: rgba(245, 158, 11, 0.3);
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
     -fx-cursor: hand;
 }
 
 .um-reset-btn:hover {
-    -fx-background-color: #fffbeb;
+    -fx-background-color: rgba(245, 158, 11, 0.1);
     -fx-border-color: #f59e0b;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
 }
 
-/* ─── DIALOG ─── */
+.um-reset-btn:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ENHANCED DIALOG — Dynamic Modal Design
+   ═══════════════════════════════════════════════════════ */
 
 /* Dialog pane itself — uses hardcoded colors because dialogs are
    separate windows and can't resolve -spark-* CSS variables. */
 .um-dialog-pane {
     -fx-background-color: #FFFFFF;
     -fx-font-family: "Funnel Sans", "Segoe UI", system-ui;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 30, 0, 0, 10);
 }
 
 .um-dialog-pane > .content {
@@ -283,76 +486,145 @@
 }
 
 .um-dialog-pane > .button-bar {
-    -fx-padding: 0 24 20 24;
+    -fx-padding: 0 24 24 24;
     -fx-background-color: #FFFFFF;
+    -fx-background-radius: 0 0 16 16;
 }
 
 .um-dialog-pane > .button-bar > .container {
-    -fx-spacing: 10;
+    -fx-spacing: 12;
 }
 
 .um-dialog-pane .button {
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
     -fx-font-weight: 600;
-    -fx-padding: 8 20;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
+    -fx-padding: 12 28;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
     -fx-cursor: hand;
 }
 
-/* Primary action button (Create / Save) */
+/* Primary action button (Create / Save) — Gradient style */
 .um-dialog-pane .button-bar .button:default {
-    -fx-background-color: #2563EB;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
     -fx-text-fill: #FFFFFF;
     -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.35), 10, 0, 0, 4);
 }
 
 .um-dialog-pane .button-bar .button:default:hover {
-    -fx-background-color: #1d4ed8;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5A6FD6 0%, #6A4291 100%);
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.5), 14, 0, 0, 6);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
 .um-dialog-pane .button-bar .button:default:pressed {
-    -fx-background-color: #1e40af;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #4F5FC2 0%, #5E3A80 100%);
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
 }
 
-/* Cancel button */
+/* Cancel button — Subtle style */
 .um-dialog-pane .button-bar .button:cancel {
-    -fx-background-color: #F1F5F9;
+    -fx-background-color: #F8FAFC;
     -fx-text-fill: #475569;
     -fx-border-color: #E2E8F0;
-    -fx-border-width: 1;
+    -fx-border-width: 1.5;
 }
 
 .um-dialog-pane .button-bar .button:cancel:hover {
-    -fx-background-color: #E2E8F0;
+    -fx-background-color: #F1F5F9;
+    -fx-border-color: #CBD5E1;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
 }
 
-/* Header section inside dialog content */
+/* ─── DIALOG GRADIENT HEADER ─── */
 .um-dialog-header {
-    -fx-padding: 24 24 16 24;
-    -fx-spacing: 4;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 60%, #F093FB 100%);
+    -fx-padding: 28 28 24 28;
+    -fx-spacing: 6;
+    -fx-background-radius: 16 16 0 0;
+}
+
+/* Icon container in header */
+.um-dialog-header-icon {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 12;
+    -fx-min-width: 52;
+    -fx-max-width: 52;
+    -fx-pref-width: 52;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-pref-height: 52;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+.um-dialog-header-icon-graphic {
+    -fx-background-color: #FFFFFF;
+    -fx-min-width: 26;
+    -fx-max-width: 26;
+    -fx-pref-width: 26;
+    -fx-min-height: 26;
+    -fx-max-height: 26;
+    -fx-pref-height: 26;
 }
 
 .um-dialog-title {
-    -fx-font-size: 18px;
+    -fx-font-size: 22px;
     -fx-font-weight: 700;
-    -fx-text-fill: #1E293B;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 3, 0, 0, 1);
 }
 
 .um-dialog-subtitle {
-    -fx-font-size: 13px;
-    -fx-text-fill: #64748B;
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
+    -fx-font-weight: 400;
+}
+
+/* Decorative orbs in dialog header */
+.um-dialog-orb {
+    -fx-background-radius: 100;
+    -fx-opacity: 0.12;
+}
+
+.um-dialog-orb-1 {
+    -fx-background-color: #FFFFFF;
+    -fx-min-width: 100;
+    -fx-max-width: 100;
+    -fx-min-height: 100;
+    -fx-max-height: 100;
+}
+
+.um-dialog-orb-2 {
+    -fx-background-color: #F093FB;
+    -fx-min-width: 60;
+    -fx-max-width: 60;
+    -fx-min-height: 60;
+    -fx-max-height: 60;
+}
+
+/* Divider line inside dialog — now a subtle gradient line */
+.um-dialog-divider {
+    -fx-background-color: linear-gradient(to right, #667EEA 0%, #764BA2 50%, #F093FB 100%);
+    -fx-min-height: 3;
+    -fx-max-height: 3;
+    -fx-opacity: 0.2;
 }
 
 /* Form fields container */
 .um-dialog-form {
-    -fx-padding: 0 24 20 24;
-    -fx-spacing: 14;
+    -fx-padding: 24 28 20 28;
+    -fx-spacing: 18;
+    -fx-background-color: #FFFFFF;
 }
 
 /* Each form field group: label + input stacked vertically */
 .um-field-group {
-    -fx-spacing: 5;
+    -fx-spacing: 8;
 }
 
 .um-field-label {
@@ -361,127 +633,198 @@
     -fx-text-fill: #1E293B;
 }
 
-.um-field-input {
+/* Required field indicator */
+.um-field-required {
     -fx-font-size: 13px;
-    -fx-padding: 10 14;
+    -fx-text-fill: #EF4444;
+    -fx-font-weight: 700;
+}
+
+/* Enhanced input fields with focus animation */
+.um-field-input {
+    -fx-font-size: 14px;
+    -fx-padding: 14 16;
     -fx-border-color: #E2E8F0;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-background-color: #FFFFFF;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-background-color: #F8FAFC;
     -fx-prompt-text-fill: #94A3B8;
 }
 
-.um-field-input:focused {
-    -fx-border-color: #2563EB;
-    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.15), 6, 0, 0, 0);
+.um-field-input:hover {
+    -fx-border-color: #CBD5E1;
+    -fx-background-color: #FFFFFF;
 }
 
+.um-field-input:focused {
+    -fx-border-color: #667EEA;
+    -fx-border-width: 2;
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.2), 10, 0, 0, 0);
+}
+
+/* Success state for validated input */
+.um-field-input.valid {
+    -fx-border-color: #10B981;
+    -fx-background-color: rgba(16, 185, 129, 0.03);
+}
+
+.um-field-input.valid:focused {
+    -fx-border-color: #10B981;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.2), 10, 0, 0, 0);
+}
+
+/* Error state for input */
+.um-field-input.error {
+    -fx-border-color: #EF4444;
+    -fx-background-color: rgba(239, 68, 68, 0.03);
+}
+
+.um-field-input.error:focused {
+    -fx-border-color: #EF4444;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.2), 10, 0, 0, 0);
+}
+
+/* Enhanced combo box */
 .um-field-combo {
-    -fx-font-size: 13px;
-    -fx-padding: 6 10;
+    -fx-font-size: 14px;
+    -fx-padding: 10 14;
     -fx-border-color: #E2E8F0;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-background-color: #F8FAFC;
+}
+
+.um-field-combo:hover {
+    -fx-border-color: #CBD5E1;
     -fx-background-color: #FFFFFF;
 }
 
 .um-field-combo:focused {
-    -fx-border-color: #2563EB;
-    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.15), 6, 0, 0, 0);
+    -fx-border-color: #667EEA;
+    -fx-border-width: 2;
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.2), 10, 0, 0, 0);
 }
 
 /* Inline row for two fields side by side */
 .um-field-row {
-    -fx-spacing: 12;
+    -fx-spacing: 16;
 }
 
-/* Hint / info text */
+/* Enhanced hint / info text with icon */
 .um-dialog-hint {
     -fx-font-size: 12px;
     -fx-text-fill: #64748B;
-    -fx-font-style: italic;
-    -fx-padding: 2 0 0 0;
+    -fx-padding: 12 16;
+    -fx-background-color: linear-gradient(to right, rgba(102, 126, 234, 0.08), rgba(118, 75, 162, 0.08));
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(102, 126, 234, 0.2);
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
 }
 
-/* Divider line inside dialog */
-.um-dialog-divider {
-    -fx-background-color: #E2E8F0;
-    -fx-min-height: 1;
-    -fx-max-height: 1;
-    -fx-padding: 0 24;
+/* Info icon for hint */
+.um-hint-icon {
+    -fx-background-color: #667EEA;
+    -fx-min-width: 14;
+    -fx-max-width: 14;
+    -fx-pref-width: 14;
+    -fx-min-height: 14;
+    -fx-max-height: 14;
+    -fx-pref-height: 14;
+    -fx-shape: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z";
 }
 
-/* ─── CREDENTIAL CARD (shown after user creation) ─── */
+/* ═══════════════════════════════════════════════════════
+   CREDENTIAL CARD — Success State Dialog (Enhanced)
+   ═══════════════════════════════════════════════════════ */
 .um-cred-dialog-pane {
     -fx-background-color: #FFFFFF;
     -fx-font-family: "Funnel Sans", "Segoe UI", system-ui;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 30, 0, 0, 10);
 }
 
 .um-cred-dialog-pane > .button-bar {
-    -fx-padding: 0 24 20 24;
+    -fx-padding: 0 28 24 28;
     -fx-background-color: #FFFFFF;
+    -fx-background-radius: 0 0 16 16;
 }
 
 .um-cred-dialog-pane .button {
-    -fx-font-size: 13px;
+    -fx-font-size: 14px;
     -fx-font-weight: 600;
-    -fx-padding: 8 24;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-background-color: #2563EB;
+    -fx-padding: 12 32;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
     -fx-text-fill: #FFFFFF;
     -fx-cursor: hand;
     -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.35), 10, 0, 0, 4);
 }
 
 .um-cred-dialog-pane .button:hover {
-    -fx-background-color: #1d4ed8;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5A6FD6 0%, #6A4291 100%);
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.5), 14, 0, 0, 6);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
 }
 
+/* Success header with gradient */
 .um-cred-header {
-    -fx-padding: 24 24 16 24;
-    -fx-spacing: 4;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #10B981 0%, #06B6D4 100%);
+    -fx-padding: 28 28 24 28;
+    -fx-spacing: 8;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-radius: 16 16 0 0;
 }
 
 .um-cred-icon {
-    -fx-background-color: #dcfce7;
-    -fx-background-radius: 99;
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-background-radius: 100;
     -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
 }
 
 .um-cred-icon-text {
-    -fx-font-size: 22px;
-    -fx-text-fill: #16a34a;
+    -fx-font-size: 24px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #FFFFFF;
 }
 
 .um-cred-title {
-    -fx-font-size: 18px;
+    -fx-font-size: 22px;
     -fx-font-weight: 700;
-    -fx-text-fill: #1E293B;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 3, 0, 0, 1);
 }
 
 .um-cred-subtitle {
-    -fx-font-size: 13px;
-    -fx-text-fill: #64748B;
+    -fx-font-size: 14px;
+    -fx-text-fill: rgba(255, 255, 255, 0.85);
 }
 
 .um-cred-body {
-    -fx-padding: 0 24 20 24;
-    -fx-spacing: 12;
+    -fx-padding: 24 28 20 28;
+    -fx-spacing: 16;
+    -fx-background-color: #FFFFFF;
 }
 
+/* Credential info card with glass effect */
 .um-cred-card {
-    -fx-background-color: #F8FAFC;
-    -fx-border-color: #E2E8F0;
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, rgba(102, 126, 234, 0.06) 0%, rgba(118, 75, 162, 0.06) 100%);
+    -fx-border-color: rgba(102, 126, 234, 0.2);
     -fx-border-width: 1;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-    -fx-padding: 16;
-    -fx-spacing: 10;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 20;
+    -fx-spacing: 14;
 }
 
 .um-cred-row {
-    -fx-spacing: 8;
+    -fx-spacing: 12;
     -fx-alignment: CENTER_LEFT;
 }
 
@@ -489,32 +832,230 @@
     -fx-font-size: 12px;
     -fx-font-weight: 600;
     -fx-text-fill: #64748B;
-    -fx-min-width: 70;
+    -fx-min-width: 80;
 }
 
 .um-cred-value {
-    -fx-font-size: 14px;
+    -fx-font-size: 15px;
     -fx-font-weight: 600;
     -fx-text-fill: #1E293B;
 }
 
 .um-cred-password {
-    -fx-font-size: 15px;
+    -fx-font-size: 17px;
     -fx-font-weight: 700;
-    -fx-text-fill: #2563EB;
+    -fx-text-fill: #667EEA;
     -fx-font-family: "JetBrains Mono", "Consolas", monospace;
+    -fx-background-color: rgba(102, 126, 234, 0.1);
+    -fx-background-radius: 6;
+    -fx-padding: 4 10;
 }
 
+/* Enhanced warning banner */
 .um-cred-warning {
-    -fx-font-size: 12px;
-    -fx-text-fill: #f59e0b;
+    -fx-font-size: 13px;
+    -fx-text-fill: #92400E;
     -fx-font-weight: 500;
-    -fx-padding: 8 12;
-    -fx-background-color: #fffbeb;
-    -fx-background-radius: 8;
-    -fx-border-color: #fde68a;
-    -fx-border-radius: 8;
+    -fx-padding: 14 16;
+    -fx-background-color: linear-gradient(to right, rgba(245, 158, 11, 0.12), rgba(251, 191, 36, 0.12));
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(245, 158, 11, 0.35);
+    -fx-border-radius: 12;
     -fx-border-width: 1;
+}
+
+/* Warning icon */
+.um-warning-icon {
+    -fx-background-color: #F59E0B;
+    -fx-min-width: 18;
+    -fx-max-width: 18;
+    -fx-pref-width: 18;
+    -fx-min-height: 18;
+    -fx-max-height: 18;
+    -fx-pref-height: 18;
+    -fx-shape: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z";
+}
+
+/* ═══════════════════════════════════════════════════════
+   DELETE DIALOG — Danger Theme
+   ═══════════════════════════════════════════════════════ */
+.um-delete-dialog-pane {
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: "Funnel Sans", "Segoe UI", system-ui;
+    -fx-background-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 30, 0, 0, 10);
+}
+
+.um-delete-dialog-pane > .content {
+    -fx-padding: 0;
+}
+
+.um-delete-dialog-pane > .button-bar {
+    -fx-padding: 0 28 24 28;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 0 0 16 16;
+}
+
+.um-delete-dialog-pane > .button-bar > .container {
+    -fx-spacing: 12;
+}
+
+.um-delete-dialog-pane .button {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 28;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-cursor: hand;
+}
+
+/* Delete button — Red gradient */
+.um-delete-dialog-pane .button-bar .button:default {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #EF4444 0%, #DC2626 100%);
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.4), 10, 0, 0, 4);
+}
+
+.um-delete-dialog-pane .button-bar .button:default:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #DC2626 0%, #B91C1C 100%);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.55), 14, 0, 0, 6);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.um-delete-dialog-pane .button-bar .button:default:pressed {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #B91C1C 0%, #991B1B 100%);
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+}
+
+/* Cancel button */
+.um-delete-dialog-pane .button-bar .button:cancel {
+    -fx-background-color: #F8FAFC;
+    -fx-text-fill: #475569;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1.5;
+}
+
+.um-delete-dialog-pane .button-bar .button:cancel:hover {
+    -fx-background-color: #F1F5F9;
+    -fx-border-color: #CBD5E1;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* Delete dialog header — Red gradient */
+.um-delete-header {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #EF4444 0%, #DC2626 60%, #F97316 100%);
+    -fx-padding: 28 28 24 28;
+    -fx-spacing: 6;
+    -fx-background-radius: 16 16 0 0;
+}
+
+/* Delete icon container */
+.um-delete-header-icon {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 12;
+    -fx-min-width: 52;
+    -fx-max-width: 52;
+    -fx-pref-width: 52;
+    -fx-min-height: 52;
+    -fx-max-height: 52;
+    -fx-pref-height: 52;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2);
+}
+
+.um-delete-header-icon-graphic {
+    -fx-background-color: #FFFFFF;
+    -fx-min-width: 26;
+    -fx-max-width: 26;
+    -fx-pref-width: 26;
+    -fx-min-height: 26;
+    -fx-max-height: 26;
+    -fx-pref-height: 26;
+}
+
+/* Red orbs */
+.um-delete-orb-1 {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 100;
+    -fx-opacity: 0.12;
+    -fx-min-width: 100;
+    -fx-max-width: 100;
+    -fx-min-height: 100;
+    -fx-max-height: 100;
+}
+
+.um-delete-orb-2 {
+    -fx-background-color: #F97316;
+    -fx-background-radius: 100;
+    -fx-opacity: 0.15;
+    -fx-min-width: 60;
+    -fx-max-width: 60;
+    -fx-min-height: 60;
+    -fx-max-height: 60;
+}
+
+/* Delete dialog body */
+.um-delete-body {
+    -fx-padding: 24 28 20 28;
+    -fx-spacing: 16;
+    -fx-background-color: #FFFFFF;
+}
+
+/* User info card in delete dialog */
+.um-delete-user-card {
+    -fx-background-color: linear-gradient(to right, rgba(239, 68, 68, 0.06), rgba(249, 115, 22, 0.06));
+    -fx-border-color: rgba(239, 68, 68, 0.2);
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 18;
+    -fx-spacing: 12;
+}
+
+.um-delete-user-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1E293B;
+}
+
+.um-delete-user-email {
+    -fx-font-size: 14px;
+    -fx-text-fill: #64748B;
+}
+
+.um-delete-user-badge {
+    -fx-padding: 4 12;
+    -fx-background-radius: 99;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+/* Danger warning in delete dialog */
+.um-delete-warning {
+    -fx-font-size: 13px;
+    -fx-text-fill: #991B1B;
+    -fx-font-weight: 500;
+    -fx-padding: 14 16;
+    -fx-background-color: linear-gradient(to right, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.1));
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(239, 68, 68, 0.3);
+    -fx-border-radius: 12;
+    -fx-border-width: 1;
+}
+
+.um-delete-warning-icon {
+    -fx-background-color: #EF4444;
+    -fx-min-width: 18;
+    -fx-max-width: 18;
+    -fx-pref-width: 18;
+    -fx-min-height: 18;
+    -fx-max-height: 18;
+    -fx-pref-height: 18;
+    -fx-shape: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z";
 }
 
 /* ─── EMPTY STATE ─── */
