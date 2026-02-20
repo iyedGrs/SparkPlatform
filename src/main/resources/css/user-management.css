@@ -1,0 +1,526 @@
+/* ═══════════════════════════════════════════════════════
+   SparkPlatform — User Management Stylesheet
+   ═══════════════════════════════════════════════════════ */
+
+.um-root {
+    -fx-background-color: -spark-card;
+}
+
+.um-view-header {
+    -fx-background-color: -spark-card;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.um-view-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+.um-view-subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: -spark-muted;
+    -fx-padding: 4 0 0 0;
+}
+
+.um-content-area {
+    -fx-background-color: -spark-card;
+}
+
+/* ─── SCROLL PANE ─── */
+.um-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+}
+
+.um-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.um-scroll > .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+/* ─── SUMMARY CARDS ─── */
+.um-summary-card {
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.03), 4, 0, 0, 1);
+}
+
+.um-summary-value {
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+}
+
+.um-summary-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+    -fx-font-weight: 500;
+}
+
+/* ─── FILTER TABS ─── */
+.um-filter-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -spark-muted;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-padding: 6 16;
+    -fx-background-radius: 99;
+    -fx-cursor: hand;
+    -fx-border-color: -spark-border;
+    -fx-border-radius: 99;
+    -fx-border-width: 1;
+}
+
+.um-filter-btn.active {
+    -fx-background-color: -spark-ink;
+    -fx-text-fill: white;
+    -fx-border-color: -spark-ink;
+}
+
+.um-filter-btn:hover {
+    -fx-background-color: -spark-border;
+}
+
+.um-filter-btn.active:hover {
+    -fx-background-color: -spark-ink;
+}
+
+/* ─── TOOLBAR ─── */
+.um-count {
+    -fx-font-size: 14px;
+    -fx-text-fill: -spark-muted;
+    -fx-font-weight: 500;
+    -fx-padding: 0 0 0 12;
+}
+
+/* ─── CREATE BUTTON ─── */
+.um-create-btn {
+    -fx-background-color: -spark-accent;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.um-create-btn:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.um-create-btn:pressed {
+    -fx-background-color: #1e40af;
+}
+
+/* ─── TABLE ─── */
+.um-header-row {
+    -fx-padding: 10 16;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: -spark-soft;
+    -fx-background-radius: 8 8 0 0;
+}
+
+.um-header-cell {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-subtle;
+    -fx-text-transform: uppercase;
+}
+
+.um-table-container {
+    -fx-background-color: -spark-card;
+    -fx-border-color: -spark-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.um-row {
+    -fx-padding: 10 16;
+    -fx-border-color: transparent transparent -spark-border transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: transparent;
+}
+
+.um-row:hover {
+    -fx-background-color: -spark-soft;
+}
+
+.um-cell-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+.um-cell-email {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+}
+
+.um-cell-muted {
+    -fx-font-size: 13px;
+    -fx-text-fill: -spark-muted;
+}
+
+/* ─── AVATAR ─── */
+.um-avatar {
+    -fx-background-radius: 100;
+    -fx-alignment: center;
+}
+
+.um-avatar-text {
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: white;
+}
+
+/* ─── BADGES ─── */
+.um-badge {
+    -fx-padding: 3 10;
+    -fx-background-radius: 99;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+}
+
+.um-badge-admin {
+    -fx-background-color: #fef2f2;
+    -fx-text-fill: #991b1b;
+}
+
+.um-badge-teacher {
+    -fx-background-color: #eef2ff;
+    -fx-text-fill: #4338ca;
+}
+
+.um-badge-student {
+    -fx-background-color: #f0fdf4;
+    -fx-text-fill: #166534;
+}
+
+.um-badge-active {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
+}
+
+.um-badge-inactive {
+    -fx-background-color: #fef2f2;
+    -fx-text-fill: #991b1b;
+}
+
+/* ─── ACTION BUTTONS ─── */
+.um-edit-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: -spark-accent;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 4 12;
+    -fx-border-color: -spark-border;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.um-edit-btn:hover {
+    -fx-background-color: -spark-soft;
+    -fx-border-color: -spark-accent;
+}
+
+.um-delete-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ef4444;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 4 12;
+    -fx-border-color: #fecaca;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.um-delete-btn:hover {
+    -fx-background-color: #fef2f2;
+    -fx-border-color: #ef4444;
+}
+
+.um-reset-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #f59e0b;
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-padding: 4 12;
+    -fx-border-color: #fde68a;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
+}
+
+.um-reset-btn:hover {
+    -fx-background-color: #fffbeb;
+    -fx-border-color: #f59e0b;
+}
+
+/* ─── DIALOG ─── */
+
+/* Dialog pane itself — uses hardcoded colors because dialogs are
+   separate windows and can't resolve -spark-* CSS variables. */
+.um-dialog-pane {
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: "Funnel Sans", "Segoe UI", system-ui;
+}
+
+.um-dialog-pane > .content {
+    -fx-padding: 0;
+}
+
+.um-dialog-pane > .button-bar {
+    -fx-padding: 0 24 20 24;
+    -fx-background-color: #FFFFFF;
+}
+
+.um-dialog-pane > .button-bar > .container {
+    -fx-spacing: 10;
+}
+
+.um-dialog-pane .button {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 20;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+
+/* Primary action button (Create / Save) */
+.um-dialog-pane .button-bar .button:default {
+    -fx-background-color: #2563EB;
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: transparent;
+}
+
+.um-dialog-pane .button-bar .button:default:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.um-dialog-pane .button-bar .button:default:pressed {
+    -fx-background-color: #1e40af;
+}
+
+/* Cancel button */
+.um-dialog-pane .button-bar .button:cancel {
+    -fx-background-color: #F1F5F9;
+    -fx-text-fill: #475569;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1;
+}
+
+.um-dialog-pane .button-bar .button:cancel:hover {
+    -fx-background-color: #E2E8F0;
+}
+
+/* Header section inside dialog content */
+.um-dialog-header {
+    -fx-padding: 24 24 16 24;
+    -fx-spacing: 4;
+}
+
+.um-dialog-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1E293B;
+}
+
+.um-dialog-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748B;
+}
+
+/* Form fields container */
+.um-dialog-form {
+    -fx-padding: 0 24 20 24;
+    -fx-spacing: 14;
+}
+
+/* Each form field group: label + input stacked vertically */
+.um-field-group {
+    -fx-spacing: 5;
+}
+
+.um-field-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1E293B;
+}
+
+.um-field-input {
+    -fx-font-size: 13px;
+    -fx-padding: 10 14;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-background-color: #FFFFFF;
+    -fx-prompt-text-fill: #94A3B8;
+}
+
+.um-field-input:focused {
+    -fx-border-color: #2563EB;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.15), 6, 0, 0, 0);
+}
+
+.um-field-combo {
+    -fx-font-size: 13px;
+    -fx-padding: 6 10;
+    -fx-border-color: #E2E8F0;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-background-color: #FFFFFF;
+}
+
+.um-field-combo:focused {
+    -fx-border-color: #2563EB;
+    -fx-effect: dropshadow(gaussian, rgba(37,99,235,0.15), 6, 0, 0, 0);
+}
+
+/* Inline row for two fields side by side */
+.um-field-row {
+    -fx-spacing: 12;
+}
+
+/* Hint / info text */
+.um-dialog-hint {
+    -fx-font-size: 12px;
+    -fx-text-fill: #64748B;
+    -fx-font-style: italic;
+    -fx-padding: 2 0 0 0;
+}
+
+/* Divider line inside dialog */
+.um-dialog-divider {
+    -fx-background-color: #E2E8F0;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+    -fx-padding: 0 24;
+}
+
+/* ─── CREDENTIAL CARD (shown after user creation) ─── */
+.um-cred-dialog-pane {
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: "Funnel Sans", "Segoe UI", system-ui;
+}
+
+.um-cred-dialog-pane > .button-bar {
+    -fx-padding: 0 24 20 24;
+    -fx-background-color: #FFFFFF;
+}
+
+.um-cred-dialog-pane .button {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 24;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-color: #2563EB;
+    -fx-text-fill: #FFFFFF;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.um-cred-dialog-pane .button:hover {
+    -fx-background-color: #1d4ed8;
+}
+
+.um-cred-header {
+    -fx-padding: 24 24 16 24;
+    -fx-spacing: 4;
+}
+
+.um-cred-icon {
+    -fx-background-color: #dcfce7;
+    -fx-background-radius: 99;
+    -fx-alignment: center;
+}
+
+.um-cred-icon-text {
+    -fx-font-size: 22px;
+    -fx-text-fill: #16a34a;
+}
+
+.um-cred-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1E293B;
+}
+
+.um-cred-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: #64748B;
+}
+
+.um-cred-body {
+    -fx-padding: 0 24 20 24;
+    -fx-spacing: 12;
+}
+
+.um-cred-card {
+    -fx-background-color: #F8FAFC;
+    -fx-border-color: #E2E8F0;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 16;
+    -fx-spacing: 10;
+}
+
+.um-cred-row {
+    -fx-spacing: 8;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.um-cred-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #64748B;
+    -fx-min-width: 70;
+}
+
+.um-cred-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1E293B;
+}
+
+.um-cred-password {
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #2563EB;
+    -fx-font-family: "JetBrains Mono", "Consolas", monospace;
+}
+
+.um-cred-warning {
+    -fx-font-size: 12px;
+    -fx-text-fill: #f59e0b;
+    -fx-font-weight: 500;
+    -fx-padding: 8 12;
+    -fx-background-color: #fffbeb;
+    -fx-background-radius: 8;
+    -fx-border-color: #fde68a;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+/* ─── EMPTY STATE ─── */
+.um-empty-state {
+    -fx-font-size: 14px;
+    -fx-text-fill: -spark-subtle;
+    -fx-padding: 40 0;
+    -fx-alignment: center;
+}

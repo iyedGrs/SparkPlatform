@@ -1,0 +1,576 @@
+/* ═══════════════════════════════════════════════════════
+   SparkPlatform — Login Page Stylesheet
+   Modern, animated, gradient-infused design
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── DESIGN TOKENS ─── */
+.login-root {
+    -fx-font-family: "Funnel Sans", "Segoe UI", system-ui, sans-serif;
+    
+    /* Core Colors */
+    -spark-bg:          #0F0F23;
+    -spark-bg-subtle:   #1A1A2E;
+    -spark-card:        #FFFFFF;
+    -spark-card-hover:  #FAFBFC;
+    -spark-ink:         #1E293B;
+    -spark-muted:       #64748B;
+    -spark-muted-2:     #94A3B8;
+    
+    /* Gradient Palette (from theme image) */
+    -spark-gradient-1:  #667EEA;    /* Indigo */
+    -spark-gradient-2:  #764BA2;    /* Purple */
+    -spark-gradient-3:  #F093FB;    /* Pink */
+    -spark-gradient-4:  #F5576C;    /* Coral */
+    -spark-accent:      #6366F1;    /* Primary accent */
+    -spark-accent-dark: #4F46E5;
+    -spark-accent-glow: rgba(99, 102, 241, 0.4);
+    
+    /* Surface & Borders */
+    -spark-border:      #E2E8F0;
+    -spark-border-focus:#6366F1;
+    -spark-soft:        #F8FAFC;
+    -spark-overlay:     rgba(15, 15, 35, 0.8);
+    
+    /* Feedback Colors */
+    -spark-success:     #10B981;
+    -spark-error:       #EF4444;
+    -spark-warning:     #F59E0B;
+    
+    -fx-background-color: -spark-bg;
+}
+
+/* ─── MAIN CONTAINER ─── */
+.login-container {
+    -fx-background-color: transparent;
+}
+
+/* ═══════════════════════════════════════════════════════
+   LEFT BRAND PANEL — Gradient Background with Animations
+   ═══════════════════════════════════════════════════════ */
+
+.brand-panel {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 50%, #F093FB 100%);
+    -fx-min-width: 480px;
+    -fx-pref-width: 480px;
+    -fx-max-width: 480px;
+    -fx-padding: 60;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 20, 0, 5, 0);
+}
+
+/* Animated Background Orbs */
+.orb-container {
+    -fx-pref-width: 100%;
+    -fx-pref-height: 100%;
+}
+
+.glow-orb {
+    -fx-fill: transparent;
+    -fx-stroke: transparent;
+    -fx-opacity: 0.15;
+}
+
+.orb-1 {
+    -fx-fill: radial-gradient(center 50% 50%, radius 50%, #FFFFFF 0%, transparent 70%);
+    -fx-translate-x: -100;
+    -fx-translate-y: -150;
+}
+
+.orb-2 {
+    -fx-fill: radial-gradient(center 50% 50%, radius 50%, #F093FB 0%, transparent 70%);
+    -fx-translate-x: 120;
+    -fx-translate-y: 100;
+}
+
+.orb-3 {
+    -fx-fill: radial-gradient(center 50% 50%, radius 50%, #667EEA 0%, transparent 70%);
+    -fx-translate-x: -80;
+    -fx-translate-y: 180;
+}
+
+/* Brand Content */
+.brand-content {
+    -fx-alignment: CENTER;
+    -fx-max-width: 360;
+}
+
+.brand-logo {
+    -fx-alignment: CENTER;
+}
+
+.brand-icon {
+    -fx-background-color: #FFFFFF;
+    -fx-shape: "M7 2v11h3v9l7-12h-4l4-8z";
+    -fx-min-width: 36;
+    -fx-max-width: 36;
+    -fx-pref-width: 36;
+    -fx-min-height: 42;
+    -fx-max-height: 42;
+    -fx-pref-height: 42;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 15, 0, 0, 0);
+}
+
+.brand-title {
+    -fx-font-size: 42px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0, 0, 2);
+}
+
+.brand-subtitle {
+    -fx-font-size: 18px;
+    -fx-font-weight: 500;
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-letter-spacing: 2;
+}
+
+.brand-tagline {
+    -fx-font-size: 15px;
+    -fx-font-weight: 400;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+    -fx-text-alignment: CENTER;
+    -fx-wrap-text: true;
+    -fx-max-width: 320;
+    -fx-padding: 20 0 0 0;
+    -fx-line-spacing: 4;
+}
+
+/* Feature Pills */
+.feature-pills {
+    -fx-alignment: CENTER;
+}
+
+.feature-pill {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 100;
+    -fx-padding: 10 20 10 20;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-radius: 100;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+}
+
+.feature-pill:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RIGHT FORM PANEL — Clean White Design
+   ═══════════════════════════════════════════════════════ */
+
+.form-panel {
+    -fx-background-color: -spark-card;
+    -fx-padding: 40 60 40 60;
+    -fx-min-width: 520px;
+}
+
+.form-card-container {
+    -fx-max-width: 400;
+    -fx-alignment: CENTER;
+}
+
+/* ─── AUTH FORM BASE ─── */
+.auth-form {
+    -fx-background-color: transparent;
+    -fx-max-width: 380;
+    -fx-min-width: 380;
+    -fx-spacing: 0;
+    -fx-alignment: CENTER;
+}
+
+.auth-form.active {
+    -fx-opacity: 1;
+}
+
+/* Form Titles */
+.form-title {
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+    -fx-text-fill: -spark-ink;
+    -fx-padding: 0 0 8 0;
+}
+
+.form-subtitle {
+    -fx-font-size: 15px;
+    -fx-text-fill: -spark-muted;
+    -fx-padding: 0 0 32 0;
+    -fx-text-alignment: CENTER;
+}
+
+/* ─── INPUT GROUPS ─── */
+.input-group {
+    -fx-padding: 0 0 20 0;
+    -fx-min-width: 380;
+    -fx-max-width: 380;
+}
+
+.input-group.half-width {
+    -fx-min-width: 0;
+    -fx-max-width: 999999;
+}
+
+.name-row {
+    -fx-min-width: 380;
+    -fx-max-width: 380;
+    -fx-padding: 0 0 20 0;
+}
+
+.input-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-ink;
+}
+
+/* Input Fields */
+.auth-input {
+    -fx-background-color: -spark-soft;
+    -fx-background-radius: 10;
+    -fx-border-color: -spark-border;
+    -fx-border-radius: 10;
+    -fx-border-width: 1.5;
+    -fx-padding: 14 16 14 16;
+    -fx-font-size: 14px;
+    -fx-text-fill: -spark-ink;
+    -fx-prompt-text-fill: -spark-muted-2;
+    -fx-pref-height: 48;
+    -fx-min-height: 48;
+}
+
+.auth-input:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: -spark-accent;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, -spark-accent-glow, 12, 0, 0, 0);
+}
+
+.auth-input:hover {
+    -fx-border-color: -spark-muted-2;
+}
+
+.password-hint {
+    -fx-font-size: 12px;
+    -fx-text-fill: -spark-muted-2;
+    -fx-padding: 4 0 0 0;
+}
+
+/* Forgot Password Link */
+.forgot-link {
+    -fx-text-fill: -spark-accent;
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.forgot-link:hover {
+    -fx-text-fill: -spark-accent-dark;
+}
+
+/* ─── BUTTONS ─── */
+.primary-button {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #667EEA 0%, #764BA2 100%);
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 15px;
+    -fx-font-weight: 600;
+    -fx-padding: 14 0 14 0;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-min-width: 380;
+    -fx-max-width: 380;
+    -fx-pref-height: 50;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.4), 12, 0, 0, 4);
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #5A6FD6 0%, #6A4291 100%);
+    -fx-effect: dropshadow(gaussian, rgba(102, 126, 234, 0.6), 16, 0, 0, 6);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.primary-button:pressed {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #4F5FC2 0%, #5E3A80 100%);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.secondary-button {
+    -fx-background-color: -spark-soft;
+    -fx-text-fill: -spark-ink;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 32 12 32;
+    -fx-background-radius: 10;
+    -fx-border-color: -spark-border;
+    -fx-border-radius: 10;
+    -fx-border-width: 1.5;
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover {
+    -fx-background-color: -spark-card-hover;
+    -fx-border-color: -spark-muted-2;
+}
+
+/* ─── DIVIDER ─── */
+.divider-row {
+    -fx-padding: 28 0 28 0;
+    -fx-min-width: 380;
+    -fx-max-width: 380;
+}
+
+.divider-line {
+    -fx-background-color: -spark-border;
+    -fx-pref-height: 1;
+    -fx-min-height: 1;
+    -fx-max-height: 1;
+}
+
+.divider-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: -spark-muted-2;
+    -fx-padding: 0 4 0 4;
+}
+
+/* ─── SOCIAL BUTTONS ─── */
+.social-buttons {
+    -fx-padding: 0 0 24 0;
+}
+
+.social-button {
+    -fx-background-color: -spark-soft;
+    -fx-background-radius: 10;
+    -fx-border-color: -spark-border;
+    -fx-border-radius: 10;
+    -fx-border-width: 1.5;
+    -fx-padding: 12 24 12 24;
+    -fx-pref-width: 72;
+    -fx-pref-height: 48;
+    -fx-cursor: hand;
+}
+
+.social-button:hover {
+    -fx-background-color: -spark-card-hover;
+    -fx-border-color: -spark-muted-2;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.social-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Social Icons */
+.social-icon {
+    -fx-min-width: 20;
+    -fx-max-width: 20;
+    -fx-pref-width: 20;
+    -fx-min-height: 20;
+    -fx-max-height: 20;
+    -fx-pref-height: 20;
+}
+
+.icon-google {
+    -fx-background-color: #4285F4;
+    -fx-shape: "M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z";
+}
+
+.icon-microsoft {
+    -fx-background-color: #00A4EF;
+    -fx-shape: "M11 11H2V2h9v9zm11 0h-9V2h9v9zm-11 11H2v-9h9v9zm11 0h-9v-9h9v9z";
+}
+
+.icon-github {
+    -fx-background-color: #24292E;
+    -fx-shape: "M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z";
+}
+
+/* ─── SWITCH ROW ─── */
+.switch-row {
+    -fx-padding: 8 0 0 0;
+}
+
+.switch-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: -spark-muted;
+}
+
+.switch-link {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -spark-accent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.switch-link:hover {
+    -fx-text-fill: -spark-accent-dark;
+}
+
+.back-link {
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+    -fx-text-fill: -spark-muted;
+    -fx-border-color: transparent;
+}
+
+.back-link:hover {
+    -fx-text-fill: -spark-ink;
+}
+
+/* ─── SUCCESS STATE ─── */
+.success-form {
+    -fx-alignment: CENTER;
+}
+
+.success-icon {
+    -fx-background-color: -spark-success;
+    -fx-shape: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z";
+    -fx-min-width: 64;
+    -fx-max-width: 64;
+    -fx-pref-width: 64;
+    -fx-min-height: 64;
+    -fx-max-height: 64;
+    -fx-pref-height: 64;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.4), 20, 0, 0, 0);
+}
+
+.success-form .form-title {
+    -fx-padding: 24 0 8 0;
+}
+
+.success-form .form-subtitle {
+    -fx-padding: 0 0 24 0;
+    -fx-max-width: 300;
+}
+
+/* Back Icon for Forgot Password */
+.back-icon-container {
+    -fx-background-color: -spark-soft;
+    -fx-background-radius: 12;
+    -fx-min-width: 48;
+    -fx-max-width: 48;
+    -fx-pref-width: 48;
+    -fx-min-height: 48;
+    -fx-max-height: 48;
+    -fx-pref-height: 48;
+}
+
+/* ─── FOOTER ─── */
+.footer-row {
+    -fx-padding: 40 0 0 0;
+}
+
+.footer-link {
+    -fx-font-size: 12px;
+    -fx-text-fill: -spark-muted-2;
+    -fx-border-color: transparent;
+}
+
+.footer-link:hover {
+    -fx-text-fill: -spark-muted;
+}
+
+.footer-dot {
+    -fx-font-size: 8px;
+    -fx-text-fill: -spark-muted-2;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ANIMATIONS — Keyframes for dynamic effects
+   (Applied via Java controller for cross-browser compat)
+   ═══════════════════════════════════════════════════════ */
+
+/* Loading Spinner Style */
+.loading-spinner {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 3;
+    -fx-border-radius: 50%;
+    -fx-min-width: 24;
+    -fx-max-width: 24;
+    -fx-min-height: 24;
+    -fx-max-height: 24;
+}
+
+/* Error State */
+.auth-input.error {
+    -fx-border-color: -spark-error;
+    -fx-background-color: rgba(239, 68, 68, 0.05);
+}
+
+.auth-input.error:focused {
+    -fx-border-color: -spark-error;
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.3), 12, 0, 0, 0);
+}
+
+.error-message {
+    -fx-font-size: 12px;
+    -fx-text-fill: -spark-error;
+    -fx-padding: 6 0 0 0;
+}
+
+/* Success state for inputs */
+.auth-input.success {
+    -fx-border-color: -spark-success;
+}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE ADJUSTMENTS
+   ═══════════════════════════════════════════════════════ */
+
+/* Shake animation class - applied via controller */
+.shake {
+    /* Animation handled in Java */
+}
+
+/* Pulse animation for buttons */
+.pulse {
+    /* Animation handled in Java */
+}
+
+/* Fade transitions */
+.fade-in {
+    -fx-opacity: 1;
+}
+
+.fade-out {
+    -fx-opacity: 0;
+}
+
+/* Slide animations */
+.slide-left {
+    -fx-translate-x: -20;
+}
+
+.slide-right {
+    -fx-translate-x: 20;
+}
+
+/* Scale animation for success icon */
+.scale-bounce {
+    /* Animation handled in Java */
+}
+
+/* Tooltip styling */
+.tooltip {
+    -fx-background-color: -spark-ink;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 12px;
+    -fx-padding: 8 12 8 12;
+    -fx-background-radius: 6;
+}
+
+/* Error message label */
+.error-message {
+    -fx-text-fill: #EF4444;
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-padding: 4 0 8 0;
+}

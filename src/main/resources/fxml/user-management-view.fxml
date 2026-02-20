@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.spark.platform.controllers.UserManagementController"
+      stylesheets="@../css/user-management.css"
+      styleClass="um-root">
+
+    <VBox styleClass="um-view-header">
+        <padding><Insets top="24" right="32" bottom="16" left="32" /></padding>
+        <Label fx:id="viewTitle" text="User Management" styleClass="um-view-title" />
+        <Label fx:id="viewSubtitle" text="Manage students, teachers, and administrators"
+               styleClass="um-view-subtitle" />
+    </VBox>
+
+    <StackPane fx:id="contentArea" styleClass="um-content-area" VBox.vgrow="ALWAYS">
+        <padding><Insets top="0" right="32" bottom="24" left="32" /></padding>
+    </StackPane>
+</VBox>

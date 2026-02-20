@@ -50,6 +50,10 @@
                 <Button fx:id="navTeacherProjects" text="Teacher Projects" styleClass="nav-item" onAction="#onNavClick">
                     <graphic><Region styleClass="nav-icon,icon-teacher-projects" /></graphic>
                 </Button>
+                <Button fx:id="navUserManagement" text="User Management" styleClass="nav-item" onAction="#onNavClick"
+                        visible="false" managed="false">
+                    <graphic><Region styleClass="nav-icon,icon-user-management" /></graphic>
+                </Button>
             </VBox>
 
             <!-- Spacer pushes settings to bottom -->
@@ -90,8 +94,8 @@
                                 <Label fx:id="avatarInitials" text="IG" styleClass="avatar-initials" />
                             </StackPane>
                             <VBox spacing="0" alignment="CENTER_LEFT">
-                                <Label text="Iyed Grassi" styleClass="profile-name" mouseTransparent="true" />
-                                <Label text="Student" styleClass="profile-role" mouseTransparent="true" />
+                                <Label fx:id="profileNameLabel" text="User" styleClass="profile-name" mouseTransparent="true" />
+                                <Label fx:id="profileRoleLabel" text="Role" styleClass="profile-role" mouseTransparent="true" />
                             </VBox>
                             <Label text="▾" styleClass="chevron-label" />
                         </HBox>

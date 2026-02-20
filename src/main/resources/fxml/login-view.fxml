@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.spark.platform.controllers.LoginController"
+           stylesheets="@../css/login.css"
+           styleClass="login-root">
+
+    <!-- Main Container: Split Layout -->
+    <HBox styleClass="login-container">
+
+        <!-- ═══════════ LEFT PANEL: Decorative Branding ═══════════ -->
+        <VBox fx:id="brandPanel" styleClass="brand-panel" alignment="CENTER" HBox.hgrow="ALWAYS">
+
+            <!-- Animated Background Orbs -->
+            <StackPane styleClass="orb-container" managed="false">
+                <Circle fx:id="orb1" styleClass="glow-orb,orb-1" radius="120" />
+                <Circle fx:id="orb2" styleClass="glow-orb,orb-2" radius="80" />
+                <Circle fx:id="orb3" styleClass="glow-orb,orb-3" radius="60" />
+            </StackPane>
+
+            <!-- Logo and Tagline -->
+            <VBox styleClass="brand-content" alignment="CENTER" spacing="16">
+                <HBox styleClass="brand-logo" alignment="CENTER" spacing="12">
+                    <Region styleClass="brand-icon" />
+                    <Label text="Spark" styleClass="brand-title" />
+                </HBox>
+                <Label text="Academic Studio" styleClass="brand-subtitle" />
+                <Label fx:id="brandTagline" styleClass="brand-tagline"
+                       text="Ignite your learning journey with collaborative tools designed for modern education." />
+            </VBox>
+
+            <!-- Floating Feature Pills -->
+            <HBox styleClass="feature-pills" spacing="12" alignment="CENTER">
+                <padding>
+                    <Insets top="40" />
+                </padding>
+                <Label text="✦ Collaborate" styleClass="feature-pill" />
+                <Label text="✦ Learn" styleClass="feature-pill" />
+                <Label text="✦ Succeed" styleClass="feature-pill" />
+            </HBox>
+        </VBox>
+
+        <!-- ═══════════ RIGHT PANEL: Authentication Forms ═══════════ -->
+        <VBox styleClass="form-panel" alignment="CENTER" HBox.hgrow="ALWAYS">
+
+            <!-- Form Card Container -->
+            <StackPane fx:id="formContainer" styleClass="form-card-container">
+
+                <!-- ─── SIGN IN FORM ─── -->
+                <VBox fx:id="signInForm" styleClass="auth-form,active" spacing="0" alignment="CENTER">
+                    <Label text="Welcome back" styleClass="form-title" />
+                    <Label text="Sign in to continue your journey" styleClass="form-subtitle" />
+
+                    <!-- Email Field -->
+                    <VBox styleClass="input-group" spacing="6">
+                        <Label text="Email" styleClass="input-label" />
+                        <TextField fx:id="signInEmail" styleClass="auth-input" promptText="Enter your email" />
+                    </VBox>
+
+                    <!-- Password Field -->
+                    <VBox styleClass="input-group" spacing="6">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="Password" styleClass="input-label" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Hyperlink fx:id="forgotPasswordLink" text="Forgot password?"
+                                       styleClass="forgot-link" onAction="#showForgotPassword" />
+                        </HBox>
+                        <PasswordField fx:id="signInPassword" styleClass="auth-input" promptText="Enter your password" />
+                    </VBox>
+
+                    <!-- Sign In Button -->
+                    <Button fx:id="signInButton" text="Sign In" styleClass="primary-button"
+                            onAction="#handleSignIn" defaultButton="true" />
+
+                    <!-- Divider -->
+                    <HBox styleClass="divider-row" alignment="CENTER" spacing="16">
+                        <Region styleClass="divider-line" HBox.hgrow="ALWAYS" />
+                        <Label text="or continue with" styleClass="divider-text" />
+                        <Region styleClass="divider-line" HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <!-- Social Login Buttons -->
+                    <HBox styleClass="social-buttons" spacing="12" alignment="CENTER">
+                        <Button styleClass="social-button" onAction="#handleGoogleSignIn">
+                            <graphic><Region styleClass="social-icon,icon-google" /></graphic>
+                        </Button>
+                        <Button styleClass="social-button" onAction="#handleMicrosoftSignIn">
+                            <graphic><Region styleClass="social-icon,icon-microsoft" /></graphic>
+                        </Button>
+                        <Button styleClass="social-button" onAction="#handleGitHubSignIn">
+                            <graphic><Region styleClass="social-icon,icon-github" /></graphic>
+                        </Button>
+                    </HBox>
+
+                    <!-- Switch to Sign Up -->
+                    <HBox styleClass="switch-row" alignment="CENTER" spacing="6">
+                        <Label text="Don't have an account?" styleClass="switch-text" />
+                        <Hyperlink fx:id="switchToSignUp" text="Sign up" styleClass="switch-link" onAction="#showSignUp" />
+                    </HBox>
+                </VBox>
+
+                <!-- ─── SIGN UP FORM ─── -->
+                <VBox fx:id="signUpForm" styleClass="auth-form" spacing="0" alignment="CENTER" visible="false" opacity="0">
+                    <Label text="Create account" styleClass="form-title" />
+                    <Label text="Join Spark and start learning" styleClass="form-subtitle" />
+
+                    <!-- Name Fields Row -->
+                    <HBox spacing="12" styleClass="name-row">
+                        <VBox styleClass="input-group,half-width" spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="First Name" styleClass="input-label" />
+                            <TextField fx:id="signUpFirstName" styleClass="auth-input" promptText="First name" />
+                        </VBox>
+                        <VBox styleClass="input-group,half-width" spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Last Name" styleClass="input-label" />
+                            <TextField fx:id="signUpLastName" styleClass="auth-input" promptText="Last name" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Email Field -->
+                    <VBox styleClass="input-group" spacing="6">
+                        <Label text="Email" styleClass="input-label" />
+                        <TextField fx:id="signUpEmail" styleClass="auth-input" promptText="Enter your email" />
+                    </VBox>
+
+                    <!-- Password Field -->
+                    <VBox styleClass="input-group" spacing="6">
+                        <Label text="Password" styleClass="input-label" />
+                        <PasswordField fx:id="signUpPassword" styleClass="auth-input" promptText="Create a password" />
+                        <Label styleClass="password-hint" text="Must be at least 8 characters" />
+                    </VBox>
+
+                    <!-- Confirm Password Field -->
+                    <VBox styleClass="input-group" spacing="6">
+                        <Label text="Confirm Password" styleClass="input-label" />
+                        <PasswordField fx:id="signUpConfirmPassword" styleClass="auth-input" promptText="Confirm your password" />
+                    </VBox>
+
+                    <!-- Sign Up Button -->
+                    <Button fx:id="signUpButton" text="Create Account" styleClass="primary-button"
+                            onAction="#handleSignUp" />
+
+                    <!-- Switch to Sign In -->
+                    <HBox styleClass="switch-row" alignment="CENTER" spacing="6">
+                        <Label text="Already have an account?" styleClass="switch-text" />
+                        <Hyperlink fx:id="switchToSignIn" text="Sign in" styleClass="switch-link" onAction="#showSignIn" />
+                    </HBox>
+                </VBox>
+
+                <!-- ─── FORGOT PASSWORD FORM ─── -->
+                <VBox fx:id="forgotPasswordForm" styleClass="auth-form" spacing="0" alignment="CENTER" visible="false" opacity="0">
+                    <Region styleClass="back-icon-container">
+                        <padding>
+                            <Insets bottom="8" />
+                        </padding>
+                    </Region>
+                    <Label text="Reset password" styleClass="form-title" />
+                    <Label text="Enter your email and we'll send you a reset link" styleClass="form-subtitle" wrapText="true" />
+
+                    <!-- Email Field -->
+                    <VBox styleClass="input-group" spacing="6">
+                        <Label text="Email" styleClass="input-label" />
+                        <TextField fx:id="resetEmail" styleClass="auth-input" promptText="Enter your email" />
+                    </VBox>
+
+                    <!-- Reset Button -->
+                    <Button fx:id="resetButton" text="Send Reset Link" styleClass="primary-button"
+                            onAction="#handleResetPassword" />
+
+                    <!-- Back to Sign In -->
+                    <HBox styleClass="switch-row" alignment="CENTER" spacing="6">
+                        <Hyperlink fx:id="backToSignIn" text="← Back to sign in" styleClass="back-link" onAction="#showSignIn" />
+                    </HBox>
+                </VBox>
+
+                <!-- ─── SUCCESS MESSAGE ─── -->
+                <VBox fx:id="successMessage" styleClass="auth-form,success-form" spacing="0" alignment="CENTER" visible="false" opacity="0">
+                    <Region styleClass="success-icon" />
+                    <Label fx:id="successTitle" text="Check your email" styleClass="form-title" />
+                    <Label fx:id="successSubtitle" text="We've sent a password reset link to your email" styleClass="form-subtitle" wrapText="true" />
+
+                    <Button text="Back to Sign In" styleClass="secondary-button" onAction="#showSignIn" />
+                </VBox>
+
+            </StackPane>
+
+            <!-- Footer -->
+            <HBox styleClass="footer-row" alignment="CENTER" spacing="16">
+                <Hyperlink text="Terms" styleClass="footer-link" />
+                <Label text="•" styleClass="footer-dot" />
+                <Hyperlink text="Privacy" styleClass="footer-link" />
+                <Label text="•" styleClass="footer-dot" />
+                <Hyperlink text="Help" styleClass="footer-link" />
+            </HBox>
+        </VBox>
+
+    </HBox>
+
+</StackPane>

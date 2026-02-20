@@ -51,6 +51,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.33</version>
         </dependency>
+        <!-- H2 in-memory database (fallback when MySQL is unavailable) -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.2.224</version>
+        </dependency>
     </dependencies>
 
     <build>
