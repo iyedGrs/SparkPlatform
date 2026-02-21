@@ -2,6 +2,7 @@ package com.spark.platform.controllers;
 
 import com.spark.platform.models.Notification;
 import com.spark.platform.models.User;
+import com.spark.platform.services.EmailService;
 import com.spark.platform.services.NotificationService;
 import com.spark.platform.services.UserService;
 import com.spark.platform.utils.SessionManager;
@@ -30,6 +31,7 @@ public class UserManagementController {
 
     private final UserService userService = new UserService();
     private final NotificationService notificationService = new NotificationService();
+    private final EmailService emailService = new EmailService();
 
     private String currentFilter = "ALL";
     private List<User> allUsers;
@@ -576,7 +578,13 @@ public class UserManagementController {
                     System.err.println("[UserMgmt] Failed to create notification: " + ex.getMessage());
                 }
 
-                showCredentialsDialog(user, generatedPassword);
+                // Send welcome email with credentials
+                boolean emailSent = emailService.sendWelcomeEmail(user, generatedPassword);
+                if (emailSent) {
+                    System.out.println("[UserMgmt] Welcome email sent to: " + user.getEmail());
+                }
+
+                showCredentialsDialog(user, generatedPassword, emailSent);
                 loadUsers();
 
             } catch (SQLException ex) {
@@ -777,7 +785,13 @@ public class UserManagementController {
                         System.err.println("[UserMgmt] Failed to create notification: " + ex.getMessage());
                     }
 
-                    showCredentialsDialog(user, newPassword);
+                    // Send password reset email
+                    boolean emailSent = emailService.sendPasswordResetEmail(user, newPassword);
+                    if (emailSent) {
+                        System.out.println("[UserMgmt] Password reset email sent to: " + user.getEmail());
+                    }
+
+                    showCredentialsDialog(user, newPassword, emailSent);
                 } catch (SQLException ex) {
                     showAlert(Alert.AlertType.ERROR, "Error", "Failed to reset password: " + ex.getMessage());
                 }
@@ -889,8 +903,24 @@ public class UserManagementController {
         dialog.showAndWait().ifPresent(confirmed -> {
             if (confirmed) {
                 try {
+                    // Send account disabled notification email BEFORE deleting
+                    boolean emailSent = emailService.sendAccountDisabledEmail(user);
+                    if (emailSent) {
+                        System.out.println("[UserMgmt] Account disabled notification sent to: " + user.getEmail());
+                    } else {
+                        System.out.println("[UserMgmt] Could not send notification email to: " + user.getEmail());
+                    }
+
+                    // Now delete the user
                     userService.delete(user.getUserId());
                     loadUsers();
+
+                    // Show confirmation with email status
+                    String message = emailSent 
+                        ? "User deleted successfully. A notification email has been sent to " + user.getEmail()
+                        : "User deleted successfully. (Email notification could not be sent)";
+                    showAlert(Alert.AlertType.INFORMATION, "User Deleted", message);
+
                 } catch (SQLException ex) {
                     showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete user: " + ex.getMessage());
                 }
@@ -902,7 +932,7 @@ public class UserManagementController {
     // UTILITY
     // ═══════════════════════════════════════════════════════
 
-    private void showCredentialsDialog(User user, String password) {
+    private void showCredentialsDialog(User user, String password, boolean emailSent) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Spark");
 
@@ -985,6 +1015,27 @@ public class UserManagementController {
 
         credCard.getChildren().addAll(emailRow, pwdRow, roleRow);
 
+        // Email sent status indicator
+        HBox emailStatusBox = new HBox(10);
+        emailStatusBox.setAlignment(Pos.CENTER_LEFT);
+        emailStatusBox.setPadding(new Insets(12, 16, 12, 16));
+        
+        if (emailSent) {
+            emailStatusBox.setStyle("-fx-background-color: #ECFDF5; -fx-background-radius: 8; -fx-border-color: #A7F3D0; -fx-border-radius: 8;");
+            Label emailIcon = new Label("✉️");
+            emailIcon.setStyle("-fx-font-size: 18px;");
+            Label emailStatus = new Label("Email notification sent to " + user.getEmail());
+            emailStatus.setStyle("-fx-text-fill: #047857; -fx-font-size: 13px; -fx-font-weight: 500;");
+            emailStatusBox.getChildren().addAll(emailIcon, emailStatus);
+        } else {
+            emailStatusBox.setStyle("-fx-background-color: #FEF3C7; -fx-background-radius: 8; -fx-border-color: #FDE68A; -fx-border-radius: 8;");
+            Label emailIcon = new Label("📧");
+            emailIcon.setStyle("-fx-font-size: 18px;");
+            Label emailStatus = new Label("Email not sent - please share credentials manually");
+            emailStatus.setStyle("-fx-text-fill: #92400E; -fx-font-size: 13px; -fx-font-weight: 500;");
+            emailStatusBox.getChildren().addAll(emailIcon, emailStatus);
+        }
+
         // Enhanced warning with icon
         HBox warningBox = new HBox(10);
         warningBox.getStyleClass().add("um-cred-warning");
@@ -996,7 +1047,7 @@ public class UserManagementController {
         warningBox.getChildren().addAll(warningIcon, warning);
         warningBox.setMaxWidth(Double.MAX_VALUE);
 
-        body.getChildren().addAll(credCard, warningBox);
+        body.getChildren().addAll(credCard, emailStatusBox, warningBox);
         content.getChildren().addAll(headerWrapper, body);
 
         dialog.getDialogPane().setContent(content);

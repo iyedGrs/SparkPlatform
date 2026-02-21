@@ -88,3 +88,6 @@ ai-engine/.venv/
 *.md
 
 spark demo/*
+
+
+**.properties

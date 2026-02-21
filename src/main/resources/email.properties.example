@@ -1,0 +1,20 @@
+# =============================================
+# SparkPlatform — Gmail OAuth Configuration
+# =============================================
+# STEP 1: Go to Google Cloud Console (https://console.cloud.google.com)
+# STEP 2: Create OAuth 2.0 Client ID (Desktop Application)
+# STEP 3: Download the credentials JSON file
+# STEP 4: Copy this file and rename to email.properties
+# STEP 5: Fill in your credentials below
+# STEP 6: NEVER commit email.properties or credentials.json to Git
+# =============================================
+
+# Gmail OAuth Settings
+gmail.client.id=YOUR_CLIENT_ID.apps.googleusercontent.com
+gmail.client.secret=YOUR_CLIENT_SECRET
+gmail.application.name=Spark Platform
+gmail.sender.email=your-email@gmail.com
+gmail.sender.name=Spark Platform
+
+# Path to store OAuth tokens (relative to project root)
+gmail.tokens.directory=tokens

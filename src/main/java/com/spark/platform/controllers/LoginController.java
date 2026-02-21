@@ -2,13 +2,18 @@ package com.spark.platform.controllers;
 
 import com.spark.platform.MainApp;
 import com.spark.platform.models.User;
+import com.spark.platform.services.EmailService;
 import com.spark.platform.services.UserService;
 import com.spark.platform.utils.SessionManager;
 import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
@@ -74,9 +79,19 @@ public class LoginController {
 
     // Services
     private final UserService userService = new UserService();
+    private final EmailService emailService = new EmailService();
 
     // Error label (created programmatically)
     private Label signInErrorLabel;
+
+    // Validation labels (created programmatically)
+    private Label signInEmailValidation;
+    private Label signUpEmailValidation;
+    private Label signUpPasswordStrengthLabel;
+    private Region signUpPasswordStrengthBar;
+    private VBox signUpPasswordRequirements;
+    private Label signUpConfirmValidation;
+    private Label resetEmailValidation;
 
     // ═══════════════════════════════════════════════════════
     // INITIALIZATION
@@ -102,6 +117,12 @@ public class LoginController {
             ((javafx.scene.Node) switchToSignUp.getParent()).setManaged(false);
         }
 
+        // Initialize validation components
+        setupValidationComponents();
+
+        // Setup real-time validation listeners
+        setupRealTimeValidation();
+
         // Start background animations
         initializeOrbAnimations();
         initializeTaglineAnimation();
@@ -114,6 +135,322 @@ public class LoginController {
 
         // Entry animation
         Platform.runLater(this::playEntryAnimation);
+    }
+
+    /**
+     * Creates validation labels and components for all forms.
+     */
+    private void setupValidationComponents() {
+        // Sign-in email validation hint
+        signInEmailValidation = createValidationLabel();
+        insertAfterNode(signInForm, signInEmail, signInEmailValidation);
+
+        // Sign-up email validation hint
+        signUpEmailValidation = createValidationLabel();
+        insertAfterNode(signUpForm, signUpEmail, signUpEmailValidation);
+
+        // Password strength indicator for sign-up
+        VBox strengthContainer = new VBox(6);
+        strengthContainer.getStyleClass().add("password-strength-container");
+
+        HBox strengthRow = new HBox(8);
+        strengthRow.setAlignment(Pos.CENTER_LEFT);
+
+        Region strengthBarBg = new Region();
+        strengthBarBg.getStyleClass().add("password-strength-bar");
+        strengthBarBg.setPrefWidth(120);
+        strengthBarBg.setMaxWidth(120);
+
+        signUpPasswordStrengthBar = new Region();
+        signUpPasswordStrengthBar.getStyleClass().addAll("password-strength-fill");
+        signUpPasswordStrengthBar.setPrefWidth(0);
+        signUpPasswordStrengthBar.setMaxWidth(120);
+
+        StackPane barStack = new StackPane(strengthBarBg, signUpPasswordStrengthBar);
+        barStack.setAlignment(Pos.CENTER_LEFT);
+        barStack.setMaxWidth(120);
+
+        signUpPasswordStrengthLabel = new Label();
+        signUpPasswordStrengthLabel.getStyleClass().add("password-strength-label");
+
+        strengthRow.getChildren().addAll(barStack, signUpPasswordStrengthLabel);
+
+        // Password requirements checklist
+        signUpPasswordRequirements = new VBox(4);
+        signUpPasswordRequirements.getStyleClass().add("validation-requirements");
+
+        strengthContainer.getChildren().addAll(strengthRow, signUpPasswordRequirements);
+        insertAfterNode(signUpForm, signUpPassword, strengthContainer);
+
+        // Confirm password validation
+        signUpConfirmValidation = createValidationLabel();
+        insertAfterNode(signUpForm, signUpConfirmPassword, signUpConfirmValidation);
+
+        // Reset email validation
+        resetEmailValidation = createValidationLabel();
+        insertAfterNode(forgotPasswordForm, resetEmail, resetEmailValidation);
+    }
+
+    /**
+     * Creates a validation label with default styling.
+     */
+    private Label createValidationLabel() {
+        Label label = new Label();
+        label.getStyleClass().add("validation-message");
+        label.setVisible(false);
+        label.setManaged(false);
+        label.setWrapText(true);
+        return label;
+    }
+
+    /**
+     * Inserts a node immediately after another node in a VBox.
+     */
+    private void insertAfterNode(VBox parent, javafx.scene.Node target, javafx.scene.Node toInsert) {
+        if (parent == null || target == null) return;
+        int index = parent.getChildren().indexOf(target);
+        if (index >= 0 && index < parent.getChildren().size()) {
+            parent.getChildren().add(index + 1, toInsert);
+        }
+    }
+
+    /**
+     * Sets up real-time validation listeners for all input fields.
+     */
+    private void setupRealTimeValidation() {
+        // Sign-in email validation
+        if (signInEmail != null) {
+            signInEmail.textProperty().addListener((obs, oldVal, newVal) -> {
+                validateEmailField(signInEmail, signInEmailValidation, newVal, false);
+            });
+            signInEmail.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                if (!isFocused && !signInEmail.getText().isEmpty()) {
+                    validateEmailField(signInEmail, signInEmailValidation, signInEmail.getText(), true);
+                }
+            });
+        }
+
+        // Sign-up email validation
+        if (signUpEmail != null) {
+            signUpEmail.textProperty().addListener((obs, oldVal, newVal) -> {
+                validateEmailField(signUpEmail, signUpEmailValidation, newVal, false);
+            });
+            signUpEmail.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                if (!isFocused && !signUpEmail.getText().isEmpty()) {
+                    validateEmailField(signUpEmail, signUpEmailValidation, signUpEmail.getText(), true);
+                }
+            });
+        }
+
+        // Sign-up password strength
+        if (signUpPassword != null) {
+            signUpPassword.textProperty().addListener((obs, oldVal, newVal) -> {
+                updatePasswordStrength(newVal);
+                updatePasswordRequirements(newVal);
+                // Also re-validate confirm password if it has content
+                if (signUpConfirmPassword != null && !signUpConfirmPassword.getText().isEmpty()) {
+                    validatePasswordMatch(signUpConfirmPassword.getText(), newVal);
+                }
+            });
+        }
+
+        // Confirm password validation
+        if (signUpConfirmPassword != null) {
+            signUpConfirmPassword.textProperty().addListener((obs, oldVal, newVal) -> {
+                String password = signUpPassword != null ? signUpPassword.getText() : "";
+                validatePasswordMatch(newVal, password);
+            });
+        }
+
+        // Reset email validation
+        if (resetEmail != null) {
+            resetEmail.textProperty().addListener((obs, oldVal, newVal) -> {
+                validateEmailField(resetEmail, resetEmailValidation, newVal, false);
+            });
+            resetEmail.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+                if (!isFocused && !resetEmail.getText().isEmpty()) {
+                    validateEmailField(resetEmail, resetEmailValidation, resetEmail.getText(), true);
+                }
+            });
+        }
+    }
+
+    /**
+     * Validates an email field and shows appropriate feedback.
+     */
+    private void validateEmailField(TextField field, Label validationLabel, String email, boolean showSuccess) {
+        clearAllStates(field);
+        
+        if (email == null || email.isEmpty()) {
+            hideValidation(validationLabel);
+            return;
+        }
+
+        if (isValidEmail(email)) {
+            field.getStyleClass().add("success");
+            if (showSuccess) {
+                showValidation(validationLabel, "✓ Valid email format", "success");
+            } else {
+                hideValidation(validationLabel);
+            }
+        } else if (email.contains("@") && email.length() > 3) {
+            // Partial email - show hint
+            field.getStyleClass().add("error");
+            showValidation(validationLabel, "Please enter a valid email address", "error");
+        } else {
+            hideValidation(validationLabel);
+        }
+    }
+
+    /**
+     * Updates the password strength indicator.
+     */
+    private void updatePasswordStrength(String password) {
+        if (password == null || password.isEmpty()) {
+            signUpPasswordStrengthBar.setPrefWidth(0);
+            signUpPasswordStrengthLabel.setText("");
+            clearStrengthStyles();
+            return;
+        }
+
+        int strength = calculatePasswordStrength(password);
+        String strengthText;
+        String styleClass;
+        double width;
+
+        if (strength < 2) {
+            strengthText = "Weak";
+            styleClass = "weak";
+            width = 30;
+        } else if (strength < 3) {
+            strengthText = "Fair";
+            styleClass = "fair";
+            width = 60;
+        } else if (strength < 4) {
+            strengthText = "Good";
+            styleClass = "good";
+            width = 90;
+        } else {
+            strengthText = "Strong";
+            styleClass = "strong";
+            width = 120;
+        }
+
+        // Animate width change
+        Timeline widthAnim = new Timeline(
+            new KeyFrame(Duration.millis(200),
+                new KeyValue(signUpPasswordStrengthBar.prefWidthProperty(), width, Interpolator.EASE_OUT)
+            )
+        );
+        widthAnim.play();
+
+        clearStrengthStyles();
+        signUpPasswordStrengthBar.getStyleClass().add(styleClass);
+        signUpPasswordStrengthLabel.getStyleClass().add(styleClass);
+        signUpPasswordStrengthLabel.setText(strengthText);
+    }
+
+    /**
+     * Clears all strength indicator styles.
+     */
+    private void clearStrengthStyles() {
+        signUpPasswordStrengthBar.getStyleClass().removeAll("weak", "fair", "good", "strong");
+        signUpPasswordStrengthLabel.getStyleClass().removeAll("weak", "fair", "good", "strong");
+    }
+
+    /**
+     * Calculates password strength score (0-5).
+     */
+    private int calculatePasswordStrength(String password) {
+        int score = 0;
+        if (password.length() >= 8) score++;
+        if (password.length() >= 12) score++;
+        if (password.matches(".*[a-z].*")) score++;
+        if (password.matches(".*[A-Z].*")) score++;
+        if (password.matches(".*[0-9].*")) score++;
+        if (password.matches(".*[^a-zA-Z0-9].*")) score++;
+        return score;
+    }
+
+    /**
+     * Updates the password requirements checklist.
+     */
+    private void updatePasswordRequirements(String password) {
+        signUpPasswordRequirements.getChildren().clear();
+        
+        if (password == null || password.isEmpty()) return;
+
+        addRequirementItem("At least 8 characters", password.length() >= 8);
+        addRequirementItem("Contains lowercase letter", password.matches(".*[a-z].*"));
+        addRequirementItem("Contains uppercase letter", password.matches(".*[A-Z].*"));
+        addRequirementItem("Contains a number", password.matches(".*[0-9].*"));
+    }
+
+    /**
+     * Adds a requirement item to the list.
+     */
+    private void addRequirementItem(String text, boolean isMet) {
+        HBox item = new HBox(8);
+        item.getStyleClass().add("requirement-item");
+        item.setAlignment(Pos.CENTER_LEFT);
+
+        Region icon = new Region();
+        icon.getStyleClass().addAll("requirement-icon", isMet ? "met" : "pending");
+
+        Label label = new Label(text);
+        label.getStyleClass().addAll("requirement-text", isMet ? "met" : "pending");
+
+        item.getChildren().addAll(icon, label);
+        signUpPasswordRequirements.getChildren().add(item);
+    }
+
+    /**
+     * Validates password confirmation matches.
+     */
+    private void validatePasswordMatch(String confirm, String password) {
+        clearAllStates(signUpConfirmPassword);
+        
+        if (confirm == null || confirm.isEmpty()) {
+            hideValidation(signUpConfirmValidation);
+            return;
+        }
+
+        if (confirm.equals(password)) {
+            signUpConfirmPassword.getStyleClass().add("success");
+            showValidation(signUpConfirmValidation, "✓ Passwords match", "success");
+        } else {
+            signUpConfirmPassword.getStyleClass().add("error");
+            showValidation(signUpConfirmValidation, "Passwords do not match", "error");
+        }
+    }
+
+    /**
+     * Shows a validation message with specified style.
+     */
+    private void showValidation(Label label, String message, String styleClass) {
+        if (label == null) return;
+        label.setText(message);
+        label.getStyleClass().removeAll("error", "success", "hint");
+        label.getStyleClass().add(styleClass);
+        label.setVisible(true);
+        label.setManaged(true);
+    }
+
+    /**
+     * Hides a validation message.
+     */
+    private void hideValidation(Label label) {
+        if (label == null) return;
+        label.setVisible(false);
+        label.setManaged(false);
+    }
+
+    /**
+     * Clears all validation states from a field.
+     */
+    private void clearAllStates(TextField field) {
+        if (field == null) return;
+        field.getStyleClass().removeAll("error", "success");
     }
 
     /**
@@ -348,9 +685,8 @@ public class LoginController {
      * Shows an error state on an input field.
      */
     private void showInputError(TextField field) {
-        if (!field.getStyleClass().contains("error")) {
-            field.getStyleClass().add("error");
-        }
+        clearAllStates(field);
+        field.getStyleClass().add("error");
         shakeNode(field);
     }
 
@@ -358,7 +694,7 @@ public class LoginController {
      * Clears error state from an input field.
      */
     private void clearInputError(TextField field) {
-        field.getStyleClass().remove("error");
+        clearAllStates(field);
     }
 
     /**
@@ -584,18 +920,77 @@ public class LoginController {
         // Show loading state
         setButtonLoading(resetButton, true);
 
-        // Simulate password reset (replace with actual logic)
-        Timeline resetDelay = new Timeline(new KeyFrame(Duration.millis(1500), e -> {
-            setButtonLoading(resetButton, false);
-            
-            // TODO: Implement actual password reset
-            System.out.println("Password reset requested for: " + email);
-            
-            // Show success message
-            showSuccessMessage("Check your email", 
-                "We've sent a password reset link to " + email);
-        }));
-        resetDelay.play();
+        // Process password reset on background thread
+        new Thread(() -> {
+            try {
+                // Check if user exists
+                User user = userService.findByEmail(email);
+                
+                Platform.runLater(() -> {
+                    setButtonLoading(resetButton, false);
+                    
+                    if (user == null) {
+                        // Don't reveal if email exists or not for security
+                        // Show same success message regardless
+                        showSuccessMessage("Check your email", 
+                            "If an account exists for " + email + ", you will receive a password reset email shortly.");
+                        return;
+                    }
+                    
+                    // Generate new password and update in database
+                    try {
+                        String newPassword = UserService.generatePassword();
+                        userService.updatePassword(user.getUserId(), newPassword);
+                        
+                        // Send password reset email
+                        boolean emailSent = emailService.sendPasswordResetEmail(user, newPassword);
+                        
+                        if (emailSent) {
+                            System.out.println("[Login] Password reset email sent to: " + email);
+                            showSuccessMessage("Check your email", 
+                                "We've sent your new password to " + email + ". Please check your inbox.");
+                        } else {
+                            // Email failed but password was changed - show error
+                            showResetError("Password was reset but email could not be sent. Please contact an administrator.");
+                        }
+                        
+                    } catch (Exception ex) {
+                        System.err.println("[Login] Password reset failed: " + ex.getMessage());
+                        showResetError("Failed to reset password. Please try again later.");
+                    }
+                });
+                
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    setButtonLoading(resetButton, false);
+                    showResetError("Connection error. Please try again.");
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Shows an error message in the forgot password form.
+     */
+    private void showResetError(String message) {
+        // Create or find error label in forgot password form
+        Label errorLabel = (Label) forgotPasswordForm.lookup(".reset-error-label");
+        if (errorLabel == null) {
+            errorLabel = new Label();
+            errorLabel.getStyleClass().addAll("error-message", "reset-error-label");
+            errorLabel.setWrapText(true);
+            // Insert before the reset button
+            int btnIndex = forgotPasswordForm.getChildren().indexOf(resetButton);
+            if (btnIndex >= 0) {
+                forgotPasswordForm.getChildren().add(btnIndex, errorLabel);
+            } else {
+                forgotPasswordForm.getChildren().add(errorLabel);
+            }
+        }
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+        shakeNode(resetButton);
     }
 
     // ═══════════════════════════════════════════════════════

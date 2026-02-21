@@ -499,26 +499,165 @@
     -fx-max-height: 24;
 }
 
+/* ═══════════════════════════════════════════════════════
+   INPUT VALIDATION STATES
+   ═══════════════════════════════════════════════════════ */
+
 /* Error State */
 .auth-input.error {
     -fx-border-color: -spark-error;
-    -fx-background-color: rgba(239, 68, 68, 0.05);
+    -fx-border-width: 2;
+    -fx-background-color: rgba(239, 68, 68, 0.04);
 }
 
 .auth-input.error:focused {
     -fx-border-color: -spark-error;
-    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.3), 12, 0, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(239, 68, 68, 0.35), 14, 0, 0, 0);
 }
 
+/* Success State */
+.auth-input.success {
+    -fx-border-color: -spark-success;
+    -fx-border-width: 2;
+    -fx-background-color: rgba(16, 185, 129, 0.04);
+}
+
+.auth-input.success:focused {
+    -fx-border-color: -spark-success;
+    -fx-effect: dropshadow(gaussian, rgba(16, 185, 129, 0.35), 14, 0, 0, 0);
+}
+
+/* Validation message (below input) */
+.validation-message {
+    -fx-font-size: 12px;
+    -fx-padding: 6 0 0 4;
+    -fx-font-weight: 500;
+}
+
+.validation-message.error {
+    -fx-text-fill: -spark-error;
+}
+
+.validation-message.success {
+    -fx-text-fill: -spark-success;
+}
+
+.validation-message.hint {
+    -fx-text-fill: -spark-muted-2;
+}
+
+/* Error message (general form error) */
 .error-message {
     -fx-font-size: 12px;
     -fx-text-fill: -spark-error;
     -fx-padding: 6 0 0 0;
 }
 
-/* Success state for inputs */
-.auth-input.success {
-    -fx-border-color: -spark-success;
+/* ─── PASSWORD STRENGTH INDICATOR ─── */
+.password-strength-container {
+    -fx-padding: 8 0 0 0;
+    -fx-spacing: 8;
+}
+
+.password-strength-bar {
+    -fx-background-color: -spark-border;
+    -fx-background-radius: 4;
+    -fx-pref-height: 4;
+    -fx-min-height: 4;
+    -fx-max-height: 4;
+}
+
+.password-strength-fill {
+    -fx-background-radius: 4;
+    -fx-pref-height: 4;
+    -fx-min-height: 4;
+    -fx-max-height: 4;
+}
+
+.password-strength-fill.weak {
+    -fx-background-color: #EF4444;
+}
+
+.password-strength-fill.fair {
+    -fx-background-color: #F59E0B;
+}
+
+.password-strength-fill.good {
+    -fx-background-color: #3B82F6;
+}
+
+.password-strength-fill.strong {
+    -fx-background-color: linear-gradient(to right, #10B981, #06B6D4);
+}
+
+.password-strength-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+
+.password-strength-label.weak {
+    -fx-text-fill: #EF4444;
+}
+
+.password-strength-label.fair {
+    -fx-text-fill: #F59E0B;
+}
+
+.password-strength-label.good {
+    -fx-text-fill: #3B82F6;
+}
+
+.password-strength-label.strong {
+    -fx-text-fill: #10B981;
+}
+
+/* ─── VALIDATION REQUIREMENTS LIST ─── */
+.validation-requirements {
+    -fx-padding: 10 0 0 0;
+    -fx-spacing: 6;
+}
+
+.requirement-item {
+    -fx-spacing: 8;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.requirement-icon {
+    -fx-min-width: 14;
+    -fx-max-width: 14;
+    -fx-pref-width: 14;
+    -fx-min-height: 14;
+    -fx-max-height: 14;
+    -fx-pref-height: 14;
+    -fx-background-radius: 100;
+}
+
+.requirement-icon.pending {
+    -fx-background-color: -spark-border;
+}
+
+.requirement-icon.met {
+    -fx-background-color: -spark-success;
+}
+
+.requirement-icon.unmet {
+    -fx-background-color: -spark-error;
+}
+
+.requirement-text {
+    -fx-font-size: 12px;
+}
+
+.requirement-text.pending {
+    -fx-text-fill: -spark-muted-2;
+}
+
+.requirement-text.met {
+    -fx-text-fill: -spark-success;
+}
+
+.requirement-text.unmet {
+    -fx-text-fill: -spark-error;
 }
 
 /* ═══════════════════════════════════════════════════════
