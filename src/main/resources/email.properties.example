@@ -8,6 +8,16 @@
 # STEP 5: Fill in your credentials below
 # STEP 6: NEVER commit email.properties or credentials.json to Git
 # =============================================
+#
+# IMPORTANT: These credentials are used for BOTH:
+#   - Sending emails (welcome, password reset, account disabled)
+#   - Google Sign-In authentication for users
+#
+# Make sure your OAuth consent screen has these scopes enabled:
+#   - https://www.googleapis.com/auth/gmail.send (for emails)
+#   - https://www.googleapis.com/auth/userinfo.email (for sign-in)
+#   - https://www.googleapis.com/auth/userinfo.profile (for sign-in)
+# =============================================
 
 # Gmail OAuth Settings
 gmail.client.id=YOUR_CLIENT_ID.apps.googleusercontent.com
@@ -17,4 +27,5 @@ gmail.sender.email=your-email@gmail.com
 gmail.sender.name=Spark Platform
 
 # Path to store OAuth tokens (relative to project root)
+# Tokens are stored separately for email and login to avoid conflicts
 gmail.tokens.directory=tokens

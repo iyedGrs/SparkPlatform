@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
@@ -118,6 +119,12 @@
                     <Label text="Create account" styleClass="form-title" />
                     <Label text="Join Spark and start learning" styleClass="form-subtitle" />
 
+                    <!-- Role Selection -->
+                    <VBox styleClass="input-group" spacing="6">
+                        <Label text="I am a" styleClass="input-label" />
+                        <ComboBox fx:id="signUpRoleCombo" styleClass="auth-input" promptText="Select your role" />
+                    </VBox>
+
                     <!-- Name Fields Row -->
                     <HBox spacing="12" styleClass="name-row">
                         <VBox styleClass="input-group,half-width" spacing="6" HBox.hgrow="ALWAYS">
@@ -152,6 +159,26 @@
                     <!-- Sign Up Button -->
                     <Button fx:id="signUpButton" text="Create Account" styleClass="primary-button"
                             onAction="#handleSignUp" />
+
+                    <!-- Divider -->
+                    <HBox styleClass="divider-row" alignment="CENTER" spacing="16">
+                        <Region styleClass="divider-line" HBox.hgrow="ALWAYS" />
+                        <Label text="or sign up with" styleClass="divider-text" />
+                        <Region styleClass="divider-line" HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <!-- Social Sign Up Buttons -->
+                    <HBox styleClass="social-buttons" spacing="12" alignment="CENTER">
+                        <Button styleClass="social-button" onAction="#handleGoogleSignUp">
+                            <graphic><Region styleClass="social-icon,icon-google" /></graphic>
+                        </Button>
+                        <Button styleClass="social-button" onAction="#handleMicrosoftSignUp">
+                            <graphic><Region styleClass="social-icon,icon-microsoft" /></graphic>
+                        </Button>
+                        <Button styleClass="social-button" onAction="#handleGitHubSignUp">
+                            <graphic><Region styleClass="social-icon,icon-github" /></graphic>
+                        </Button>
+                    </HBox>
 
                     <!-- Switch to Sign In -->
                     <HBox styleClass="switch-row" alignment="CENTER" spacing="6">

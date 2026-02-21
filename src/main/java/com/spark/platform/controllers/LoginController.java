@@ -3,6 +3,8 @@ package com.spark.platform.controllers;
 import com.spark.platform.MainApp;
 import com.spark.platform.models.User;
 import com.spark.platform.services.EmailService;
+import com.spark.platform.services.GoogleAuthService;
+import com.spark.platform.services.GoogleAuthService.GoogleAuthResult;
 import com.spark.platform.services.UserService;
 import com.spark.platform.utils.SessionManager;
 import javafx.animation.*;
@@ -49,6 +51,7 @@ public class LoginController {
 
     // Sign Up Form
     @FXML private VBox signUpForm;
+    @FXML private ComboBox<String> signUpRoleCombo;
     @FXML private TextField signUpFirstName;
     @FXML private TextField signUpLastName;
     @FXML private TextField signUpEmail;
@@ -80,6 +83,7 @@ public class LoginController {
     // Services
     private final UserService userService = new UserService();
     private final EmailService emailService = new EmailService();
+    private final GoogleAuthService googleAuthService = new GoogleAuthService();
 
     // Error label (created programmatically)
     private Label signInErrorLabel;
@@ -111,14 +115,14 @@ public class LoginController {
             signInForm.getChildren().add(btnIndex, signInErrorLabel);
         }
 
-        // Hide sign-up link (only admin creates accounts)
-        if (switchToSignUp != null && switchToSignUp.getParent() != null) {
-            switchToSignUp.getParent().setVisible(false);
-            ((javafx.scene.Node) switchToSignUp.getParent()).setManaged(false);
-        }
-
         // Initialize validation components
         setupValidationComponents();
+
+        // Initialize role selector for sign-up
+        if (signUpRoleCombo != null) {
+            signUpRoleCombo.getItems().addAll("Student", "Teacher");
+            signUpRoleCombo.setValue("Student"); // Default selection
+        }
 
         // Setup real-time validation listeners
         setupRealTimeValidation();
@@ -889,21 +893,65 @@ public class LoginController {
 
         if (hasError) return;
 
+        // Get selected role
+        String selectedRole = signUpRoleCombo.getValue();
+        String userType = "Student".equals(selectedRole) ? "STUDENT" : "TEACHER";
+
         // Show loading state
         setButtonLoading(signUpButton, true);
 
-        // Simulate account creation (replace with actual logic)
-        Timeline createDelay = new Timeline(new KeyFrame(Duration.millis(2000), e -> {
-            setButtonLoading(signUpButton, false);
-            
-            // TODO: Implement actual account creation
-            System.out.println("Account creation attempted for: " + email);
-            
-            // Show success message
-            showSuccessMessage("Account created!", 
-                "Welcome to Spark, " + firstName + "! Please check your email to verify your account.");
-        }));
-        createDelay.play();
+        final String fName = firstName;
+        final String lName = lastName;
+        final String role = userType;
+
+        // Create account in background thread
+        new Thread(() -> {
+            try {
+                // Check if email already exists
+                User existing = userService.findByEmail(email);
+                if (existing != null) {
+                    Platform.runLater(() -> {
+                        setButtonLoading(signUpButton, false);
+                        showSignUpError("An account already exists for " + email + ".\nPlease use Sign In instead.");
+                    });
+                    return;
+                }
+
+                // Create user with selected role
+                User newUser = new User();
+                newUser.setName(fName + " " + lName);
+                newUser.setEmail(email);
+                newUser.setUserType(role);
+                newUser.setStatus("ACTIVE");
+
+                User createdUser = userService.create(newUser, password);
+
+                // Send welcome email
+                boolean emailSent = emailService.sendWelcomeEmail(createdUser, password);
+
+                Platform.runLater(() -> {
+                    setButtonLoading(signUpButton, false);
+
+                    System.out.println("[SignUp] Account created for: " + email);
+                    if (emailSent) {
+                        showSuccessMessage("Account created!",
+                                "Welcome to Spark, " + fName + "!\n\n" +
+                                "A confirmation has been sent to " + email + ".");
+                    } else {
+                        showSuccessMessage("Account created!",
+                                "Welcome to Spark, " + fName + "!\n\n" +
+                                "You can now sign in with your email and password.");
+                    }
+                });
+
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    setButtonLoading(signUpButton, false);
+                    System.err.println("[SignUp] Failed to create account: " + ex.getMessage());
+                    showSignUpError("Failed to create account. Please try again later.");
+                });
+            }
+        }).start();
     }
 
     @FXML
@@ -999,9 +1047,79 @@ public class LoginController {
 
     @FXML
     private void handleGoogleSignIn(ActionEvent event) {
-        animateSocialButton((Button) event.getSource());
-        // TODO: Implement Google OAuth
-        System.out.println("Google sign-in clicked");
+        Button btn = (Button) event.getSource();
+        animateSocialButton(btn);
+
+        if (!googleAuthService.isAvailable()) {
+            showGoogleAuthError("Google sign-in is not configured. Please contact an administrator.");
+            return;
+        }
+
+        // Show loading state
+        btn.setDisable(true);
+        btn.setText("Connecting...");
+
+        // Run OAuth flow in background thread (opens browser)
+        new Thread(() -> {
+            try {
+                // Authenticate with Google - allow all user types (ADMINISTRATOR, TEACHER, STUDENT)
+                GoogleAuthResult result = googleAuthService.authenticateWithGoogle(
+                        "ADMINISTRATOR", "TEACHER", "STUDENT"
+                );
+
+                Platform.runLater(() -> {
+                    btn.setDisable(false);
+                    btn.setText(""); // Social buttons usually just have icons
+
+                    if (result.isSuccess()) {
+                        // Login successful
+                        User user = result.getUser();
+                        SessionManager.getInstance().login(user);
+                        System.out.println("[Login] Google sign-in successful for: " + user.getEmail());
+
+                        playButtonSuccessAnimation(btn);
+
+                        Timeline navigateDelay = new Timeline(new KeyFrame(Duration.millis(300), ev -> {
+                            MainApp.showMainApplication();
+                        }));
+                        navigateDelay.play();
+                    } else {
+                        // Show appropriate error based on result
+                        switch (result.getStatus()) {
+                            case USER_NOT_FOUND:
+                                showGoogleAuthError("No Spark account found for " + result.getGoogleEmail() + ".\nPlease contact an administrator to create your account.");
+                                break;
+                            case UNAUTHORIZED_ROLE:
+                                showGoogleAuthError(result.getErrorMessage());
+                                break;
+                            case ACCOUNT_DISABLED:
+                                showGoogleAuthError("Your account has been disabled.\nPlease contact the ESPRIT Administration.");
+                                break;
+                            default:
+                                showGoogleAuthError(result.getErrorMessage());
+                        }
+                    }
+                });
+
+            } catch (GoogleAuthService.GoogleAuthException e) {
+                Platform.runLater(() -> {
+                    btn.setDisable(false);
+                    btn.setText("");
+                    showGoogleAuthError("Google sign-in failed. Please try again.");
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Shows an error message for Google authentication failures.
+     */
+    private void showGoogleAuthError(String message) {
+        // Hide any previous error and show the sign-in error
+        signInErrorLabel.setText(message);
+        signInErrorLabel.setVisible(true);
+        signInErrorLabel.setManaged(true);
+        shakeNode(signInButton);
     }
 
     @FXML
@@ -1016,6 +1134,174 @@ public class LoginController {
         animateSocialButton((Button) event.getSource());
         // TODO: Implement GitHub OAuth
         System.out.println("GitHub sign-in clicked");
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // SOCIAL SIGN-UP HANDLERS
+    // ═══════════════════════════════════════════════════════
+
+    @FXML
+    private void handleGoogleSignUp(ActionEvent event) {
+        Button btn = (Button) event.getSource();
+        animateSocialButton(btn);
+
+        if (!googleAuthService.isAvailable()) {
+            showSignUpError("Google sign-up is not configured. Please contact an administrator.");
+            return;
+        }
+
+        // Validate role selection
+        String selectedRole = signUpRoleCombo.getValue();
+        if (selectedRole == null || selectedRole.isEmpty()) {
+            showSignUpError("Please select your role (Student or Teacher) first.");
+            return;
+        }
+
+        // Show loading state
+        btn.setDisable(true);
+
+        // Run OAuth flow in background thread (opens browser)
+        // Force account selection so user can choose which Google account to use
+        new Thread(() -> {
+            try {
+                // Authenticate with Google to get user info - force account picker
+                GoogleAuthResult result = googleAuthService.authenticateWithGoogle(true);
+
+                Platform.runLater(() -> {
+                    btn.setDisable(false);
+
+                    String googleEmail = result.getGoogleEmail();
+                    String googleName = result.getGoogleName();
+
+                    if (result.isSuccess() || result.getStatus() == GoogleAuthResult.Status.UNAUTHORIZED_ROLE) {
+                        // User already exists in the database
+                        showSignUpError("An account already exists for " + googleEmail + ".\nPlease use Sign In instead.");
+                        return;
+                    }
+
+                    if (result.getStatus() == GoogleAuthResult.Status.USER_NOT_FOUND) {
+                        // Perfect - user doesn't exist yet, create a new account
+                        createAccountFromGoogle(googleEmail, googleName);
+                    } else {
+                        showSignUpError(result.getErrorMessage());
+                    }
+                });
+
+            } catch (GoogleAuthService.GoogleAuthException e) {
+                Platform.runLater(() -> {
+                    btn.setDisable(false);
+                    showSignUpError("Google sign-up failed. Please try again.");
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Creates a new account using Google profile information.
+     */
+    private void createAccountFromGoogle(String email, String fullName) {
+        // Parse name into first and last
+        String firstName = fullName;
+        String lastName = "";
+        if (fullName != null && fullName.contains(" ")) {
+            int spaceIndex = fullName.lastIndexOf(" ");
+            firstName = fullName.substring(0, spaceIndex).trim();
+            lastName = fullName.substring(spaceIndex + 1).trim();
+        }
+
+        // Get selected role from ComboBox
+        String selectedRole = signUpRoleCombo.getValue();
+        String userType = "Teacher".equals(selectedRole) ? "TEACHER" : "STUDENT";
+
+        // Generate a random password (user can sign in with Google or use this)
+        String generatedPassword = UserService.generatePassword();
+
+        // Show loading state
+        setButtonLoading(signUpButton, true);
+
+        final String fName = firstName;
+        final String lName = lastName;
+        final String role = userType;
+
+        // Create account in background thread
+        new Thread(() -> {
+            try {
+                // Create user with selected role
+                User newUser = new User();
+                newUser.setName(fullName != null ? fullName : email.split("@")[0]);
+                newUser.setEmail(email);
+                newUser.setUserType(role);
+                newUser.setStatus("ACTIVE");
+
+                User createdUser = userService.create(newUser, generatedPassword);
+
+                // Send welcome email with password
+                boolean emailSent = emailService.sendWelcomeEmail(createdUser, generatedPassword);
+
+                Platform.runLater(() -> {
+                    setButtonLoading(signUpButton, false);
+
+                    if (emailSent) {
+                        System.out.println("[SignUp] Account created via Google for: " + email);
+                        showSuccessMessage("Account created!",
+                                "Welcome to Spark, " + fName + "!\n\n" +
+                                "Your password has been sent to " + email + ".\n" +
+                                "You can sign in with Google or use your email and password.");
+                    } else {
+                        // Account created but email failed
+                        showSuccessMessage("Account created!",
+                                "Welcome to Spark, " + fName + "!\n\n" +
+                                "Note: We couldn't send your password via email.\n" +
+                                "Please use Google Sign In to access your account.");
+                    }
+                });
+
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    setButtonLoading(signUpButton, false);
+                    System.err.println("[SignUp] Failed to create account: " + ex.getMessage());
+                    showSignUpError("Failed to create account. Please try again later.");
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * Shows an error message in the sign-up form.
+     */
+    private void showSignUpError(String message) {
+        // Create or find error label in sign-up form
+        Label errorLabel = (Label) signUpForm.lookup(".signup-error-label");
+        if (errorLabel == null) {
+            errorLabel = new Label();
+            errorLabel.getStyleClass().addAll("error-message", "signup-error-label");
+            errorLabel.setWrapText(true);
+            // Insert before the sign-up button
+            int btnIndex = signUpForm.getChildren().indexOf(signUpButton);
+            if (btnIndex >= 0) {
+                signUpForm.getChildren().add(btnIndex, errorLabel);
+            } else {
+                signUpForm.getChildren().add(errorLabel);
+            }
+        }
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+        shakeNode(signUpButton);
+    }
+
+    @FXML
+    private void handleMicrosoftSignUp(ActionEvent event) {
+        animateSocialButton((Button) event.getSource());
+        // TODO: Implement Microsoft OAuth for sign-up
+        showSignUpError("Microsoft sign-up coming soon!");
+    }
+
+    @FXML
+    private void handleGitHubSignUp(ActionEvent event) {
+        animateSocialButton((Button) event.getSource());
+        // TODO: Implement GitHub OAuth for sign-up
+        showSignUpError("GitHub sign-up coming soon!");
     }
 
     /**

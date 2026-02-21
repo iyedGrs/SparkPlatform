@@ -74,6 +74,11 @@
             <artifactId>google-api-services-gmail</artifactId>
             <version>v1-rev20231218-2.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-oauth2</artifactId>
+            <version>v2-rev20200213-2.0.0</version>
+        </dependency>
         
         <!-- Jakarta Mail API (for building email messages) -->
         <dependency>

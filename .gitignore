@@ -71,6 +71,9 @@ gradle-app.setting
 # Database credentials — NEVER COMMIT
 src/main/resources/db.properties
 
+# OAuth tokens — NEVER COMMIT
+tokens/
+
 # Python AI engine
 ai-engine/__pycache__/
 ai-engine/**/__pycache__/
